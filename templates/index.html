@@ -2,83 +2,517 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reality Bender Tools – Free AI Image Tools</title>
-
-    <!-- SEO -->
-    <meta name="description" content="Free AI Image Tools: Image Translator, Passport Photo Maker, Meme Generator. Earn online with Reality Bender Tools.">
-    <meta name="keywords" content="AI Image Tools, Passport Photo Maker, Meme Generator, Image Translator">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Reality Bender Tools – Free AI Image Tools</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Free AI Image Tools: Background Remover, Image Translator, Passport Photo Maker, Meme Generator, Social Media Resizer. Professional tools for creators.">
+    <meta name="keywords" content="AI Image Tools, Background Remover, Passport Photo Maker, Meme Generator, Image Translator, Social Media Resizer, Free Image Editor">
+    <meta name="author" content="Reality Bender Tools">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .ad-slot {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            min-height: 100px;
+            border-radius: 12px;
+        }
+        .tool-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        .loader {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
 
-<!-- HEADER -->
-<header>
-    <h1>Reality Bender Tools</h1>
-    <p>Free AI Image Tools for Creators & Earners</p>
+    <!-- Loading Overlay -->
+    <div id="loader" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+        <div class="bg-white p-10 rounded-2xl shadow-2xl text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <h3 class="text-2xl font-bold text-gray-800">Processing...</h3>
+            <p class="text-gray-500 mt-2">AI is working its magic ✨</p>
+        </div>
+    </div>
 
-    <!-- Ad Slot -->
-    <div class="ad-slot"></div>
-</header>
+    <!-- Header / Navigation -->
+    <header class="bg-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    <i class="fas fa-magic"></i> Reality Bender Tools
+                </h1>
+                <p class="text-sm text-gray-600 mt-1">Free AI Image Tools for Creators & Earners</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold">
+                    <i class="fas fa-check-circle"></i> 100% Free
+                </span>
+            </div>
+        </div>
+    </header>
 
-<!-- MAIN -->
-<main>
+    <!-- Header Ad Space -->
+    <div class="container mx-auto mt-6 px-4">
+        <div class="ad-slot">
+            📢 Ad Space - Google AdSense Integration Ready
+        </div>
+    </div>
 
-    <!-- IMAGE TRANSLATOR -->
-    <section>
-        <h2>AI Image Text Translator</h2>
-        <input type="file" id="translateImage">
-        <input type="text" id="language" placeholder="Target Language (e.g. English)">
-        <button onclick="translateImage()">Translate</button>
-        <pre id="translateResult"></pre>
+    <!-- Main Content - Tools Grid -->
+    <main class="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+
+        <!-- BACKGROUND REMOVER -->
+        <section class="tool-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-red-500 to-pink-500 p-5 text-white">
+                <h2 class="font-bold text-xl">
+                    <i class="fas fa-cut"></i> Background Remover
+                </h2>
+                <p class="text-sm mt-1 opacity-90">Remove background instantly</p>
+            </div>
+            <div class="p-6">
+                <form id="bgForm" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                        <input type="file" name="image" accept="image/*" required 
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-full file:border-0 file:bg-red-50 file:text-red-700 hover:file:bg-red-100 file:cursor-pointer">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                        <i class="fas fa-scissors"></i> Remove Background
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- AI IMAGE TRANSLATOR -->
+        <section class="tool-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-500 to-cyan-500 p-5 text-white">
+                <h2 class="font-bold text-xl">
+                    <i class="fas fa-language"></i> AI Image Translator
+                </h2>
+                <p class="text-sm mt-1 opacity-90">Extract & translate text from images</p>
+            </div>
+            <div class="p-6">
+                <form id="transForm" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                        <input type="file" name="image" accept="image/*" required 
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer mb-4">
+                    </div>
+                    <select name="language" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-4 focus:border-blue-500 focus:outline-none">
+                        <option value="English">To English</option>
+                        <option value="Urdu">To Urdu</option>
+                        <option value="Spanish">To Spanish</option>
+                        <option value="Arabic">To Arabic</option>
+                        <option value="French">To French</option>
+                        <option value="German">To German</option>
+                        <option value="Chinese">To Chinese</option>
+                        <option value="Hindi">To Hindi</option>
+                    </select>
+                    <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                        <i class="fas fa-robot"></i> Translate Now
+                    </button>
+                </form>
+                <div id="transResult" class="mt-4 p-4 bg-blue-50 rounded-xl border-2 border-blue-200 hidden">
+                    <h4 class="font-bold text-blue-900 mb-2">Translation Result:</h4>
+                    <p class="text-gray-700 whitespace-pre-wrap"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PASSPORT PHOTO MAKER -->
+        <section class="tool-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-5 text-white">
+                <h2 class="font-bold text-xl">
+                    <i class="fas fa-id-card"></i> Passport Photo Maker
+                </h2>
+                <p class="text-sm mt-1 opacity-90">Create passport-size photos</p>
+            </div>
+            <div class="p-6">
+                <form id="passportForm" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Photo</label>
+                        <input type="file" name="image" accept="image/*" required 
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-full file:border-0 file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:cursor-pointer mb-4">
+                    </div>
+                    <select name="country" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-4 focus:border-green-500 focus:outline-none">
+                        <option value="us">🇺🇸 USA (2x2 inch)</option>
+                        <option value="pk_uk">🇵🇰 Pakistan / UK</option>
+                        <option value="eu">🇪🇺 Europe</option>
+                        <option value="china">🇨🇳 China</option>
+                    </select>
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                        <i class="fas fa-camera"></i> Generate Photo
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- MEME GENERATOR -->
+        <section class="tool-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-5 text-white">
+                <h2 class="font-bold text-xl">
+                    <i class="fas fa-grin-tears"></i> Viral Meme Generator
+                </h2>
+                <p class="text-sm mt-1 opacity-90">Create hilarious memes</p>
+            </div>
+            <div class="p-6">
+                <form id="memeForm" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                        <input type="file" name="image" accept="image/*" required 
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-full file:border-0 file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100 file:cursor-pointer mb-4">
+                    </div>
+                    <input type="text" name="top_text" placeholder="TOP TEXT" 
+                        class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 uppercase focus:border-yellow-500 focus:outline-none">
+                    <input type="text" name="bottom_text" placeholder="BOTTOM TEXT" 
+                        class="w-full p-3 border-2 border-gray-200 rounded-xl mb-4 uppercase focus:border-yellow-500 focus:outline-none">
+                    <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                        <i class="fas fa-laugh"></i> Create Meme
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- SOCIAL MEDIA RESIZER -->
+        <section class="tool-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 p-5 text-white">
+                <h2 class="font-bold text-xl">
+                    <i class="fas fa-crop-alt"></i> Social Media Resizer
+                </h2>
+                <p class="text-sm mt-1 opacity-90">Perfect sizes for all platforms</p>
+            </div>
+            <div class="p-6">
+                <form id="resizeForm" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                        <input type="file" name="image" accept="image/*" required 
+                            class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-full file:border-0 file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 file:cursor-pointer mb-4">
+                    </div>
+                    <select name="platform" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-4 focus:border-purple-500 focus:outline-none">
+                        <option value="instagram_story">📱 Instagram Story</option>
+                        <option value="instagram_post">📷 Instagram Post</option>
+                        <option value="facebook_post">👍 Facebook Post</option>
+                        <option value="youtube_thumbnail">▶️ YouTube Thumbnail</option>
+                        <option value="linkedin_banner">💼 LinkedIn Banner</option>
+                        <option value="twitter_post">🐦 Twitter Post</option>
+                    </select>
+                    <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                        <i class="fas fa-expand-arrows-alt"></i> Resize Image
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TEXT ANALYZER (Groq AI) -->
+        <section class="tool-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gradient-to-r from-teal-500 to-cyan-600 p-5 text-white">
+                <h2 class="font-bold text-xl">
+                    <i class="fas fa-brain"></i> AI Text Analyzer
+                </h2>
+                <p class="text-sm mt-1 opacity-90">Get AI-powered insights</p>
+            </div>
+            <div class="p-6">
+                <form id="textForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Enter Text</label>
+                        <textarea name="text" rows="4" placeholder="Paste your text here for AI analysis..." 
+                            class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none resize-none" required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition">
+                        <i class="fas fa-search"></i> Analyze Text
+                    </button>
+                </form>
+                <div id="textResult" class="mt-4 p-4 bg-teal-50 rounded-xl border-2 border-teal-200 hidden">
+                    <h4 class="font-bold text-teal-900 mb-2">AI Analysis:</h4>
+                    <p class="text-gray-700 whitespace-pre-wrap"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Ad Space -->
+    <div class="container mx-auto mt-8 px-4">
+        <div class="ad-slot">
+            📢 Footer Ad Space - Premium Placement
+        </div>
+    </div>
+
+    <!-- SEO Content Section -->
+    <section class="container mx-auto mt-8 mb-12 px-4">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">
+                Why Use Reality Bender Tools?
+            </h2>
+            <div class="prose max-w-none text-gray-600 space-y-4">
+                <p>
+                    Reality Bender Tools provides fast, free, and accurate AI-powered image tools designed for content creators, 
+                    freelancers, and digital marketers. All tools work directly in your browser with no signup required.
+                </p>
+                
+                <h3 class="text-2xl font-bold text-gray-800 mt-6 mb-3">Free AI Image Tools Online</h3>
+                <p>
+                    Our comprehensive suite includes background removal, text translation from images, passport photo generation, 
+                    viral meme creation, and social media image optimization. Perfect for Instagram, Facebook, YouTube, and LinkedIn.
+                </p>
+                
+                <h3 class="text-2xl font-bold text-gray-800 mt-6 mb-3">Best AI Tools for Creators</h3>
+                <p>
+                    Save hours of work with our AI-powered automation. Whether you're creating content for social media, 
+                    preparing documents, or building your brand, Reality Bender Tools helps you work faster and smarter.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 mt-6 mb-3">Features & Benefits</h3>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Background Remover:</strong> Remove image backgrounds instantly with AI precision - no green screen needed</li>
+                    <li><strong>AI Translator:</strong> Extract and translate text from any image in 8+ languages including Urdu, Arabic, Chinese</li>
+                    <li><strong>Passport Photo Maker:</strong> Create professional passport photos for USA, UK, Pakistan, EU, and China</li>
+                    <li><strong>Meme Generator:</strong> Create viral-worthy memes with custom text and professional formatting</li>
+                    <li><strong>Social Media Resizer:</strong> Optimize images for Instagram Stories, Posts, YouTube Thumbnails, Facebook, LinkedIn</li>
+                    <li><strong>AI Text Analyzer:</strong> Get instant insights and analysis powered by advanced language models</li>
+                </ul>
+
+                <p class="mt-6">
+                    <strong>Privacy First:</strong> All processing happens securely. Your images are never stored on our servers. 
+                    Use our tools with confidence for personal and commercial projects.
+                </p>
+            </div>
+        </div>
     </section>
 
-    <!-- PASSPORT PHOTO -->
-    <section>
-        <h2>Passport Photo Maker</h2>
-        <input type="file" id="passportImage">
-        <select id="country">
-            <option value="US">USA (2x2 inch)</option>
-            <option value="OTHER">PK / UK / EU</option>
-        </select>
-        <button onclick="makePassport()">Create Photo</button>
-        <p id="passportStatus"></p>
-    </section>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto text-center px-4">
+            <p class="text-lg font-bold mb-2">
+                <i class="fas fa-magic"></i> Reality Bender Tools
+            </p>
+            <p class="text-gray-400 text-sm">Free AI Image Tools for Creators & Earners</p>
+            <p class="text-gray-400 text-sm mt-2">100% Free • No Signup • Privacy First</p>
+            <p class="text-gray-500 text-xs mt-4">© 2025 Reality Bender Tools. All rights reserved.</p>
+        </div>
+    </footer>
 
-    <!-- MEME GENERATOR -->
-    <section>
-        <h2>Viral Meme Generator</h2>
-        <input type="file" id="memeImage">
-        <input type="text" id="topText" placeholder="Top Text">
-        <input type="text" id="bottomText" placeholder="Bottom Text">
-        <button onclick="generateMeme()">Generate Meme</button>
-        <p id="memeStatus"></p>
-    </section>
+    <!-- JavaScript -->
+    <script>
+        function showLoader() {
+            document.getElementById('loader').classList.remove('hidden');
+        }
 
-</main>
+        function hideLoader() {
+            document.getElementById('loader').classList.add('hidden');
+        }
 
-<!-- FOOTER -->
-<footer>
-    <div class="ad-slot"></div>
-    <p>© 2025 Reality Bender Tools</p>
-</footer>
+        // Background Remover
+        document.getElementById('bgForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/remove-bg', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'no_background.png';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Processing failed'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoader();
+                this.reset();
+            }
+        });
 
-<!-- JS -->
-<script src="/static/js/main.js"></script>
+        // AI Translator
+        document.getElementById('transForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/translate', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                const resultDiv = document.getElementById('transResult');
+                const textElement = resultDiv.querySelector('p');
+                
+                if (data.success) {
+                    textElement.textContent = data.text;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    alert('Error: ' + (data.error || 'Translation failed'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoader();
+            }
+        });
 
-<!-- SEO CONTENT -->
-<section class="seo">
-    <h2>Why use Reality Bender Tools?</h2>
-    <p>Reality Bender Tools provide fast, free, and accurate AI-powered image tools designed for creators and freelancers.</p>
+        // Passport Photo
+        document.getElementById('passportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/passport', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'passport_photo.jpg';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Processing failed'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoader();
+                this.reset();
+            }
+        });
 
-    <h2>Free AI Image Tools Online</h2>
-    <p>Translate text from images, generate passport photos, and create viral memes in seconds.</p>
+        // Meme Generator
+        document.getElementById('memeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/meme', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'meme.jpg';
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Processing failed'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoader();
+                this.reset();
+            }
+        });
 
-    <h2>Best AI Tools for Creators</h2>
-    <p>Our tools help content creators save time and earn more with optimized AI workflows.</p>
-</section>
+        // Social Media Resizer
+        document.getElementById('resizeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/resize', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.download = 'resized_image.jpg';
+                    a.href = url;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + (data.error || 'Processing failed'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoader();
+                this.reset();
+            }
+        });
 
+        // Text Analyzer (Groq AI)
+        document.getElementById('textForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoader();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/text-analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                const resultDiv = document.getElementById('textResult');
+                const textElement = resultDiv.querySelector('p');
+                
+                if (data.success) {
+                    textElement.textContent = data.analysis;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    alert('Error: ' + (data.error || 'Analysis failed'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                hideLoader();
+            }
+        });
+    </script>
 </body>
 </html>
