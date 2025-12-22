@@ -1,8 +1,9 @@
 flask
 python-dotenv
 Pillow
+opencv-python-headless
+numpy
 rembg
 google-generativeai
 groq
-numpy
-opencv-python-headless
+gunicorn
