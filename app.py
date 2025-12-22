@@ -7,7 +7,7 @@ from rembg import remove
 import io
 import numpy as np
 
-# Import API clients (assuming you installed google-generativeai and groq)
+# Import API clients
 import google.generativeai as genai
 import groq
 
@@ -15,8 +15,12 @@ import groq
 app = Flask(__name__)
 
 # Load API keys from Render environment variables
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+
+# Safety check
+if not GEMINI_API_KEY or not GROQ_API_KEY:
+    raise ValueError("Environment variables GEMINI_API_KEY and GROQ_API_KEY must be set.")
 
 # --------- Routes ---------
 
