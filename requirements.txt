@@ -1,0 +1,8 @@
+flask
+python-dotenv
+Pillow
+rembg
+google-generativeai
+groq
+numpy
+opencv-python-headless
