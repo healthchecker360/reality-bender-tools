@@ -1,11 +1,11 @@
 # File: app.py
-from flask import Flask, request, send_file, render_template
+from flask import Flask, request, send_file, render_template, jsonify
 import os
 from PIL import Image, ImageDraw, ImageFont
 import tempfile
 from rembg import remove
-import io
 import numpy as np
+import io
 
 # Import API clients
 import google.generativeai as genai
@@ -15,15 +15,10 @@ import groq
 app = Flask(__name__)
 
 # Load API keys from Render environment variables
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-
-# Safety check
-if not GEMINI_API_KEY or not GROQ_API_KEY:
-    raise ValueError("Environment variables GEMINI_API_KEY and GROQ_API_KEY must be set.")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 # --------- Routes ---------
-
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -32,17 +27,21 @@ def home():
 @app.route("/translate", methods=["POST"])
 def translate_image():
     if "image" not in request.files:
-        return "No image uploaded", 400
+        return jsonify({"error": "No image uploaded"}), 400
+    if not GEMINI_API_KEY:
+        return jsonify({"error": "Gemini API key not set"}), 500
 
     image_file = request.files["image"]
     target_language = request.form.get("language", "en")
-
     img_bytes = image_file.read()
 
-    # Call Gemini API (pseudo code, replace with your exact call)
-    translated_text = genai.translate_image(img_bytes, target_language=target_language, api_key=GEMINI_API_KEY)
+    try:
+        # Replace this with your real Gemini API call
+        translated_text = genai.translate_image(img_bytes, target_language=target_language, api_key=GEMINI_API_KEY)
+    except Exception as e:
+        return jsonify({"error": f"Translation failed: {str(e)}"}), 500
 
-    return {"translated_text": translated_text}
+    return jsonify({"translated_text": translated_text})
 
 # ---------- 2. Passport Photo Maker ----------
 @app.route("/passport", methods=["POST"])
@@ -100,11 +99,17 @@ def meme_generator():
 def text_analyze():
     text = request.form.get("text", "")
     if not text:
-        return "No text provided", 400
+        return jsonify({"error": "No text provided"}), 400
+    if not GROQ_API_KEY:
+        return jsonify({"error": "Groq API key not set"}), 500
 
-    # Example pseudo call
-    result = groq.process_text(text, api_key=GROQ_API_KEY)
-    return {"result": result}
+    try:
+        # Replace this with your real Groq API call
+        result = groq.process_text(text, api_key=GROQ_API_KEY)
+    except Exception as e:
+        return jsonify({"error": f"Text analysis failed: {str(e)}"}), 500
+
+    return jsonify({"result": result})
 
 # ---------- Run ----------
 if __name__ == "__main__":
