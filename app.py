@@ -1,117 +1,338 @@
-# File: app.py
-from flask import Flask, request, send_file, render_template, jsonify
 import os
-from PIL import Image, ImageDraw, ImageFont
-import tempfile
-from rembg import remove
-import numpy as np
 import io
-
-# Import API clients
+import tempfile
+from flask import Flask, render_template, request, jsonify, send_file
+from werkzeug.utils import secure_filename
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+from rembg import remove
 import google.generativeai as genai
-import groq
+from groq import Groq
+from dotenv import load_dotenv
+import numpy as np
 
-# Initialize Flask app
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
 
-# Load API keys from Render environment variables
+# Configuration
+UPLOAD_FOLDER = '/tmp' if os.environ.get('RENDER') else 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+
+# Get API Keys
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# --------- Routes ---------
-@app.route("/")
-def home():
-    return render_template("index.html")
+# Configure APIs
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
-# ---------- 1. Image Translator ----------
-@app.route("/translate", methods=["POST"])
+if GROQ_API_KEY:
+    groq_client = Groq(api_key=GROQ_API_KEY)
+else:
+    groq_client = None
+
+# Platform sizes
+PLATFORM_SIZES = {
+    'instagram_story': (1080, 1920),
+    'instagram_post': (1080, 1080),
+    'facebook_post': (1200, 630),
+    'linkedin_banner': (1584, 396),
+    'youtube_thumbnail': (1280, 720),
+    'twitter_post': (1200, 675)
+}
+
+PASSPORT_SIZES = {
+    'us': (600, 600),
+    'pk_uk': (413, 531),
+    'eu': (413, 531),
+    'china': (390, 567)
+}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def cleanup_file(filepath):
+    """Safely remove temporary files"""
+    try:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+    except Exception as e:
+        print(f"Error cleaning up file: {e}")
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# ========== AI IMAGE TRANSLATOR (GEMINI) ==========
+@app.route('/translate', methods=['POST'])
 def translate_image():
-    if "image" not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
     if not GEMINI_API_KEY:
-        return jsonify({"error": "Gemini API key not set"}), 500
-
-    image_file = request.files["image"]
-    target_language = request.form.get("language", "en")
-    img_bytes = image_file.read()
-
+        return jsonify({'error': 'Gemini API Key not configured'}), 500
+    
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+    
+    file = request.files['image']
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type. Use PNG, JPG, JPEG, or WEBP'}), 400
+    
+    target_lang = request.form.get('language', 'English')
+    
+    filename = secure_filename(file.filename)
+    path = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(path)
+    
     try:
-        # Replace this with your real Gemini API call
-        translated_text = genai.translate_image(img_bytes, target_language=target_language, api_key=GEMINI_API_KEY)
+        # Upload to Gemini
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        uploaded_file = genai.upload_file(path)
+        
+        # Create prompt for translation
+        prompt = f"""Extract all visible text from this image and translate it to {target_lang}.
+        
+Rules:
+- Extract ALL text you see
+- Translate it accurately to {target_lang}
+- Return ONLY the translated text
+- No explanations or additional commentary
+- Preserve formatting if possible"""
+        
+        result = model.generate_content([uploaded_file, prompt])
+        
+        cleanup_file(path)
+        return jsonify({'success': True, 'text': result.text})
+        
     except Exception as e:
-        return jsonify({"error": f"Translation failed: {str(e)}"}), 500
+        cleanup_file(path)
+        return jsonify({'error': f'Translation failed: {str(e)}'}), 500
 
-    return jsonify({"translated_text": translated_text})
+# ========== BACKGROUND REMOVER ==========
+@app.route('/remove-bg', methods=['POST'])
+def remove_background():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+    
+    file = request.files['image']
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+    
+    try:
+        input_img = Image.open(file.stream).convert("RGBA")
+        output_img = remove(input_img)
+        
+        output = io.BytesIO()
+        output_img.save(output, 'PNG')
+        output.seek(0)
+        
+        return send_file(
+            output,
+            mimetype='image/png',
+            as_attachment=True,
+            download_name='no_background.png'
+        )
+    except Exception as e:
+        return jsonify({'error': f'Background removal failed: {str(e)}'}), 500
 
-# ---------- 2. Passport Photo Maker ----------
-@app.route("/passport", methods=["POST"])
+# ========== PASSPORT PHOTO MAKER ==========
+@app.route('/passport', methods=['POST'])
 def passport_photo():
-    if "image" not in request.files:
-        return "No image uploaded", 400
-
-    image_file = request.files["image"]
-    img = Image.open(image_file)
-
-    # Remove background
-    output = remove(np.array(img))
-    img_no_bg = Image.fromarray(output)
-
-    # Resize & center
-    canvas = Image.new("RGBA", (350, 450), (255, 255, 255, 255))  # EU/PK size
-    img_no_bg.thumbnail((int(canvas.width * 0.85), int(canvas.height * 0.85)))
-    canvas.paste(img_no_bg, ((canvas.width - img_no_bg.width)//2, (canvas.height - img_no_bg.height)//2), img_no_bg)
-
-    # Save to temp
-    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-    canvas.save(tmp_file.name)
-    return send_file(tmp_file.name, as_attachment=True, download_name="passport.png")
-
-# ---------- 3. Meme Generator ----------
-@app.route("/meme", methods=["POST"])
-def meme_generator():
-    if "image" not in request.files:
-        return "No image uploaded", 400
-
-    image_file = request.files["image"]
-    top_text = request.form.get("top", "")
-    bottom_text = request.form.get("bottom", "")
-
-    img = Image.open(image_file)
-    draw = ImageDraw.Draw(img)
-    font_size = max(20, img.width // 15)
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+    
+    file = request.files['image']
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+    
+    country = request.form.get('country', 'us')
+    
     try:
-        font = ImageFont.truetype("arial.ttf", font_size)
-    except:
-        font = ImageFont.load_default()
-
-    # Draw top text
-    draw.text((img.width//2, 10), top_text, fill="white", stroke_width=2, stroke_fill="black", anchor="ms", font=font)
-    # Draw bottom text
-    draw.text((img.width//2, img.height-10), bottom_text, fill="white", stroke_width=2, stroke_fill="black", anchor="ms", font=font)
-
-    # Save temp
-    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-    img.save(tmp_file.name)
-    return send_file(tmp_file.name, as_attachment=True, download_name="meme.png")
-
-# ---------- 4. Simple Text API Example (Groq) ----------
-@app.route("/text-analyze", methods=["POST"])
-def text_analyze():
-    text = request.form.get("text", "")
-    if not text:
-        return jsonify({"error": "No text provided"}), 400
-    if not GROQ_API_KEY:
-        return jsonify({"error": "Groq API key not set"}), 500
-
-    try:
-        # Replace this with your real Groq API call
-        result = groq.process_text(text, api_key=GROQ_API_KEY)
+        input_img = Image.open(file.stream).convert("RGBA")
+        
+        # Remove background
+        no_bg_img = remove(input_img)
+        
+        # Create white canvas with target size
+        target_size = PASSPORT_SIZES.get(country, (600, 600))
+        final_img = Image.new("RGB", target_size, "white")
+        
+        # Resize while maintaining aspect ratio (85% of canvas)
+        no_bg_img.thumbnail(
+            (int(target_size[0] * 0.85), int(target_size[1] * 0.85)),
+            Image.Resampling.LANCZOS
+        )
+        
+        # Center the image (bottom aligned for passport style)
+        x = (target_size[0] - no_bg_img.width) // 2
+        y = target_size[1] - no_bg_img.height
+        final_img.paste(no_bg_img, (x, y), no_bg_img)
+        
+        output = io.BytesIO()
+        final_img.save(output, 'JPEG', quality=95)
+        output.seek(0)
+        
+        return send_file(
+            output,
+            mimetype='image/jpeg',
+            as_attachment=True,
+            download_name=f'passport_{country}.jpg'
+        )
     except Exception as e:
-        return jsonify({"error": f"Text analysis failed: {str(e)}"}), 500
+        return jsonify({'error': f'Passport photo generation failed: {str(e)}'}), 500
 
-    return jsonify({"result": result})
+# ========== MEME GENERATOR ==========
+@app.route('/meme', methods=['POST'])
+def meme_generator():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+    
+    file = request.files['image']
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+    
+    top_text = request.form.get('top_text', '').upper()
+    bottom_text = request.form.get('bottom_text', '').upper()
+    
+    try:
+        img = Image.open(file.stream).convert("RGB")
+        draw = ImageDraw.Draw(img)
+        
+        # Calculate font size based on image height
+        font_size = int(img.height * 0.08)
+        
+        # Try to load a better font, fallback to default
+        try:
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)
+        except:
+            try:
+                font = ImageFont.truetype("arial.ttf", font_size)
+            except:
+                font = ImageFont.load_default()
+                font_size = 40
+        
+        def draw_text_with_outline(text, position):
+            if not text:
+                return
+            
+            x, y = position
+            
+            # Calculate text width using textbbox
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width = bbox[2] - bbox[0]
+            
+            # Center the text
+            x = (img.width - text_width) // 2
+            
+            # Draw black outline
+            outline_range = max(2, font_size // 15)
+            for adj_x in range(-outline_range, outline_range + 1):
+                for adj_y in range(-outline_range, outline_range + 1):
+                    draw.text((x + adj_x, y + adj_y), text, font=font, fill='black')
+            
+            # Draw white text
+            draw.text((x, y), text, font=font, fill='white')
+        
+        # Draw top and bottom text
+        margin = int(img.height * 0.02)
+        draw_text_with_outline(top_text, (0, margin))
+        draw_text_with_outline(bottom_text, (0, img.height - font_size - margin))
+        
+        output = io.BytesIO()
+        img.save(output, 'JPEG', quality=90)
+        output.seek(0)
+        
+        return send_file(
+            output,
+            mimetype='image/jpeg',
+            as_attachment=True,
+            download_name='meme.jpg'
+        )
+    except Exception as e:
+        return jsonify({'error': f'Meme generation failed: {str(e)}'}), 500
 
-# ---------- Run ----------
-if __name__ == "__main__":
-    # Only for local testing; Render uses gunicorn
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+# ========== SOCIAL MEDIA RESIZER ==========
+@app.route('/resize', methods=['POST'])
+def resize_image():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'}), 400
+    
+    file = request.files['image']
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+    
+    platform = request.form.get('platform', 'instagram_post')
+    
+    try:
+        img = Image.open(file.stream).convert("RGB")
+        target_size = PLATFORM_SIZES.get(platform, (1080, 1080))
+        
+        # Crop and resize to fit exactly
+        final_img = ImageOps.fit(
+            img,
+            target_size,
+            method=Image.Resampling.LANCZOS,
+            centering=(0.5, 0.5)
+        )
+        
+        output = io.BytesIO()
+        final_img.save(output, 'JPEG', quality=90)
+        output.seek(0)
+        
+        return send_file(
+            output,
+            mimetype='image/jpeg',
+            as_attachment=True,
+            download_name=f'{platform}.jpg'
+        )
+    except Exception as e:
+        return jsonify({'error': f'Image resize failed: {str(e)}'}), 500
+
+# ========== TEXT ANALYSIS WITH GROQ (BONUS FEATURE) ==========
+@app.route('/text-analyze', methods=['POST'])
+def text_analyze():
+    if not groq_client:
+        return jsonify({'error': 'Groq API Key not configured'}), 500
+    
+    text = request.form.get('text', '')
+    if not text:
+        return jsonify({'error': 'No text provided'}), 400
+    
+    try:
+        # Use Groq for text analysis
+        chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that analyzes text and provides insights."
+                },
+                {
+                    "role": "user",
+                    "content": f"Analyze this text and provide key insights: {text}"
+                }
+            ],
+            model="llama-3.3-70b-versatile",
+            temperature=0.7,
+            max_tokens=500
+        )
+        
+        result = chat_completion.choices[0].message.content
+        return jsonify({'success': True, 'analysis': result})
+        
+    except Exception as e:
+        return jsonify({'error': f'Text analysis failed: {str(e)}'}), 500
+
+# ========== HEALTH CHECK ==========
+@app.route('/health')
+def health():
+    return jsonify({
+        'status': 'healthy',
+        'gemini_configured': bool(GEMINI_API_KEY),
+        'groq_configured': bool(GROQ_API_KEY)
+    })
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
