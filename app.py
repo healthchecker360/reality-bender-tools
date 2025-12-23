@@ -10,7 +10,7 @@ from groq import Groq
 load_dotenv()
 
 app = Flask(__name__)
-TMP_DIR = "/tmp"
+TMP_DIR = "/tmp"  # Runtime temp folder (do not commit)
 
 # ------------------ API CONFIG ------------------
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
@@ -22,9 +22,9 @@ if GEMINI_KEY:
 groq_client = Groq(api_key=GROQ_KEY) if GROQ_KEY else None
 
 # ------------------ HELPERS ------------------
-def save_temp(img):
-    path = os.path.join(TMP_DIR, f"{uuid.uuid4()}.png")
-    img.save(path)
+def save_temp(img, fmt="PNG"):
+    path = os.path.join(TMP_DIR, f"{uuid.uuid4()}.{fmt.lower()}")
+    img.save(path, fmt.upper())
     return path
 
 # ------------------ ROUTES ------------------
@@ -32,7 +32,7 @@ def save_temp(img):
 def index():
     return render_template("index.html")
 
-# 1. Background Remover
+# Background Remover
 @app.route("/remove-bg", methods=["POST"])
 def remove_bg():
     file = request.files["image"]
@@ -41,18 +41,13 @@ def remove_bg():
     path = save_temp(result)
     return send_file(path, as_attachment=True)
 
-# 2. Passport Photo Maker
+# Passport Photo Maker
 @app.route("/passport", methods=["POST"])
 def passport():
     size = request.form.get("size")
     file = request.files["image"]
 
-    sizes = {
-        "US": (600, 600),
-        "PK": (413, 531),
-        "EU": (413, 531)
-    }
-
+    sizes = {"US": (600, 600), "PK": (413, 531), "EU": (413, 531)}
     img = Image.open(file).convert("RGBA")
     img = remove(img)
 
@@ -70,7 +65,7 @@ def passport():
     path = save_temp(canvas)
     return send_file(path, as_attachment=True)
 
-# 3. Social Media Resizer
+# Social Media Resizer
 @app.route("/resize", methods=["POST"])
 def resize():
     preset = request.form.get("preset")
@@ -88,18 +83,18 @@ def resize():
     path = save_temp(img)
     return send_file(path, as_attachment=True)
 
-# 4. Image Format Converter
+# Image Format Converter
 @app.route("/convert", methods=["POST"])
 def convert():
     fmt = request.form.get("format")
     file = request.files["image"]
 
     img = Image.open(file).convert("RGB")
-    path = os.path.join(TMP_DIR, f"{uuid.uuid4()}.{fmt}")
+    path = os.path.join(TMP_DIR, f"{uuid.uuid4()}.{fmt.lower()}")
     img.save(path, fmt.upper())
     return send_file(path, as_attachment=True)
 
-# 5. AI Image Enhancer (Sharpen)
+# AI Image Enhancer
 @app.route("/enhance", methods=["POST"])
 def enhance():
     file = request.files["image"]
@@ -111,7 +106,7 @@ def enhance():
     path = save_temp(img)
     return send_file(path, as_attachment=True)
 
-# ------------------ AI FEATURES ------------------
+# AI Description Generator
 @app.route("/ai-describe", methods=["POST"])
 def ai_describe():
     provider = request.form.get("provider")
