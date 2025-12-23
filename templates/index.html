@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reality Bender Tools – Free AI Image Tools</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Free AI Image Tools: Background Remover, Passport Maker, Resizer, Converter, Enhancer. Fast, professional tools for creators.">
+    <meta name="keywords" content="AI Image Tools, Background Remover, Passport Photo Maker, Meme Generator, Image Translator, Social Media Resizer, Image Converter, Image Enhancer, Free Image Editor">
+    <meta name="author" content="Reality Bender Tools">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 text-center text-2xl font-bold">
+        Reality Bender Tools
+    </header>
+
+    <!-- Ad Placeholder -->
+    <div class="ad-slot text-center my-4">
+        <!-- Replace with AdSense code -->
+        Ad Slot 1
+    </div>
+
+    <main class="container mx-auto p-4">
+
+        <!-- Image Upload Section -->
+        <section class="my-4 p-4 bg-white rounded shadow">
+            <h2 class="text-xl font-semibold mb-2">Upload Image</h2>
+            <form id="imageForm" enctype="multipart/form-data">
+                <input type="file" name="image" accept="image/*" class="border p-2 w-full mb-2" required>
+                
+                <!-- Tool Selection -->
+                <select name="tool" id="tool" class="border p-2 w-full mb-2" required>
+                    <option value="remove-bg">Background Remover</option>
+                    <option value="passport">Passport Maker</option>
+                    <option value="resize">Social Media Resizer</option>
+                    <option value="convert">Image Converter</option>
+                    <option value="enhance">AI Image Enhancer</option>
+                </select>
+
+                <!-- Additional options for each tool -->
+                <div id="options" class="mb-2"></div>
+
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Process Image</button>
+            </form>
+            <div id="result" class="mt-4"></div>
+        </section>
+
+        <!-- AI Text Tool Section -->
+        <section class="my-4 p-4 bg-white rounded shadow">
+            <h2 class="text-xl font-semibold mb-2">AI Description / Chat</h2>
+            <form id="aiForm">
+                <textarea name="text" placeholder="Enter text..." class="border p-2 w-full mb-2" required></textarea>
+                <select name="provider" class="border p-2 w-full mb-2" required>
+                    <option value="gemini">Google Gemini AI</option>
+                    <option value="groq">Groq AI</option>
+                </select>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Generate</button>
+            </form>
+            <div id="aiResult" class="mt-4"></div>
+        </section>
+
+    </main>
+
+    <!-- Middle Ad Placeholder -->
+    <div class="ad-slot text-center my-4">
+        Ad Slot 2
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        &copy; 2025 Reality Bender Tools
+    </footer>
+
+    <!-- Bottom Ad Placeholder -->
+    <div class="ad-slot text-center my-4">
+        Ad Slot 3
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const toolSelect = document.getElementById('tool');
+        const optionsDiv = document.getElementById('options');
+        const imageForm = document.getElementById('imageForm');
+        const resultDiv = document.getElementById('result');
+
+        function updateOptions() {
+            const tool = toolSelect.value;
+            optionsDiv.innerHTML = '';
+            if (tool === 'passport') {
+                optionsDiv.innerHTML = `
+                    <select name="size" class="border p-2 w-full mb-2">
+                        <option value="US">US 2x2</option>
+                        <option value="PK">PK 35x45mm</option>
+                        <option value="EU">EU Passport</option>
+                    </select>
+                `;
+            } else if (tool === 'resize') {
+                optionsDiv.innerHTML = `
+                    <select name="preset" class="border p-2 w-full mb-2">
+                        <option value="insta_post">Instagram Post</option>
+                        <option value="insta_story">Instagram Story</option>
+                        <option value="yt_thumb">YouTube Thumbnail</option>
+                        <option value="linkedin">LinkedIn Banner</option>
+                    </select>
+                `;
+            } else if (tool === 'convert') {
+                optionsDiv.innerHTML = `
+                    <select name="format" class="border p-2 w-full mb-2">
+                        <option value="PNG">PNG</option>
+                        <option value="JPG">JPG</option>
+                        <option value="WEBP">WEBP</option>
+                    </select>
+                `;
+            }
+        }
+
+        toolSelect.addEventListener('change', updateOptions);
+        updateOptions();
+
+        imageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            resultDiv.innerHTML = 'Processing...';
+            const formData = new FormData(imageForm);
+            let endpoint = '';
+            switch (formData.get('tool')) {
+                case 'remove-bg': endpoint = '/remove-bg'; break;
+                case 'passport': endpoint = '/passport'; break;
+                case 'resize': endpoint = '/resize'; break;
+                case 'convert': endpoint = '/convert'; break;
+                case 'enhance': endpoint = '/enhance'; break;
+            }
+            const res = await fetch(endpoint, { method: 'POST', body: formData });
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            resultDiv.innerHTML = `<a href="${url}" download="result.png">Download Processed Image</a><br><img src="${url}" class="mt-2 max-w-full">`;
+        });
+
+        const aiForm = document.getElementById('aiForm');
+        const aiResult = document.getElementById('aiResult');
+
+        aiForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            aiResult.innerHTML = 'Generating...';
+            const formData = new FormData(aiForm);
+            const res = await fetch('/ai-describe', { method: 'POST', body: formData });
+            const data = await res.json();
+            aiResult.innerHTML = `<pre>${data.result}</pre>`;
+        });
+    </script>
+
+</body>
+</html>
