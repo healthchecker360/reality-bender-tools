@@ -1,6 +1,15 @@
-.env
-uploads/
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Temporary files
+/tmp/
