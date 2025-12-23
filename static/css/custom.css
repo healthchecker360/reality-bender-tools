@@ -1,0 +1,11 @@
+/* static/css/custom.css */
+body {
+    font-family: 'Segoe UI', sans-serif;
+}
+.ad-slot {
+    border: 2px dashed #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+}
