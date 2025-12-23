@@ -1,3 +1,4 @@
-/tmp/
+# Ignore environment & caches
 .env
+/tmp/
 __pycache__/
