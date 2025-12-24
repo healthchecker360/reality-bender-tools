@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="feature-page">
+    <h1>Resize Images</h1>
+    <p>Resize your images for social media, websites, or personal use. Choose custom dimensions or use preset sizes.</p>
+
+    <form action="{{ url_for('resize') }}" method="POST" enctype="multipart/form-data" class="image-form">
+        <input type="file" name="image" accept="image/*" required>
+        <input type="number" name="width" placeholder="Width (px)" required>
+        <input type="number" name="height" placeholder="Height (px)" required>
+        <button type="submit" class="btn">Resize Image</button>
+    </form>
+
+    {% if output_image %}
+        <div class="result">
+            <h3>Result:</h3>
+            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Resized Image">
+            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
+        </div>
+    {% endif %}
+    
+    <p class="seo-text">
+        Image resizer, resize photos online, AI image resize, free image resize tool, social media image sizing.
+    </p>
+</section>
+{% endblock %}
