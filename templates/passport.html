@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="feature-page">
+    <h1>Create Passport Photos</h1>
+    <p>Generate perfectly sized passport photos for any country. Our AI tool automatically detects face and resizes the photo according to official standards.</p>
+
+    <form action="{{ url_for('passport') }}" method="POST" enctype="multipart/form-data" class="image-form">
+        <input type="file" name="image" accept="image/*" required>
+        <select name="country">
+            <option value="usa">USA</option>
+            <option value="uk">UK</option>
+            <option value="india">India</option>
+            <option value="canada">Canada</option>
+        </select>
+        <button type="submit" class="btn">Create Passport Photo</button>
+    </form>
+
+    {% if output_image %}
+        <div class="result">
+            <h3>Result:</h3>
+            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Passport Photo">
+            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
+        </div>
+    {% endif %}
+    
+    <p class="seo-text">
+        Passport photo maker, AI passport photo, photo resize tool, online passport photo generator, free passport photo editor.
+    </p>
+</section>
+{% endblock %}
