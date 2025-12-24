@@ -1,4 +1,0 @@
-from PIL import Image
-
-img = Image.new("RGB", (600, 400), color=(200, 200, 200))
-img.save("static/images/placeholder.png")
