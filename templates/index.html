@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <h1>Ultimate AI Image Tools</h1>
+        <p>Remove backgrounds, enhance images, resize for social media, create passport photos, and convert formats easily!</p>
+        <a href="{{ url_for('remove_bg') }}" class="btn">Get Started</a>
+    </div>
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="AI Image Tools Banner">
+    </div>
+</section>
+
+<section class="features">
+    <h2>Our Features</h2>
+    <div class="feature-cards">
+        <div class="card">
+            <h3>Remove Background</h3>
+            <p>Instantly remove background from any image with AI.</p>
+            <a href="{{ url_for('remove_bg') }}" class="btn-card">Try Now</a>
+        </div>
+        <div class="card">
+            <h3>Passport Photo</h3>
+            <p>Create perfectly sized passport photos for any country.</p>
+            <a href="{{ url_for('passport') }}" class="btn-card">Try Now</a>
+        </div>
+        <div class="card">
+            <h3>Resize Images</h3>
+            <p>Resize images for Instagram, YouTube, LinkedIn, and more.</p>
+            <a href="{{ url_for('resize') }}" class="btn-card">Try Now</a>
+        </div>
+        <div class="card">
+            <h3>Convert Format</h3>
+            <p>Convert images to JPG, PNG, WebP, GIF, BMP easily.</p>
+            <a href="{{ url_for('convert') }}" class="btn-card">Try Now</a>
+        </div>
+        <div class="card">
+            <h3>Enhance Images</h3>
+            <p>Enhance sharpness, contrast, and colors automatically.</p>
+            <a href="{{ url_for('enhance') }}" class="btn-card">Try Now</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
