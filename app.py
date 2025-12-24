@@ -34,6 +34,7 @@ def validate_image(file):
 def index():
     return render_template("index.html")
 
+# ---------- Standalone Pages ----------
 @app.route("/remove-bg", methods=["GET", "POST"])
 def remove_bg():
     if request.method == "POST":
@@ -105,6 +106,69 @@ def enhance():
         return send_file(path, as_attachment=True, download_name="enhanced.png")
     return render_template("enhance.html")
 
+# ---------- AJAX Routes for All-in-One ----------
+@app.route("/remove-bg-ajax", methods=["POST"])
+def remove_bg_ajax():
+    file = request.files.get("image")
+    is_valid, msg = validate_image(file)
+    if not is_valid:
+        return jsonify({"error": msg}), 400
+    img = Image.open(file).convert("RGBA")
+    result = remove(img)
+    path = save_temp(result)
+    return send_file(path, as_attachment=True, download_name="no-bg.png")
+
+@app.route("/passport-ajax", methods=["POST"])
+def passport_ajax():
+    file = request.files.get("image")
+    size_key = request.form.get("size", "US")
+    sizes = {"US": (600,600), "PK": (413,531), "EU": (413,531)}
+    if size_key not in sizes:
+        return jsonify({"error": "Invalid size"}), 400
+    img = Image.open(file).convert("RGBA")
+    img = remove(img)
+    canvas = Image.new("RGB", sizes[size_key], "white")
+    w, h = canvas.size
+    ratio = int(h*0.85)/img.height
+    img = img.resize((int(img.width*ratio), int(h*0.85)))
+    canvas.paste(img, ((w-img.width)//2, (h-img.height)//2), img)
+    path = save_temp(canvas)
+    return send_file(path, as_attachment=True, download_name=f"passport-{size_key}.png")
+
+@app.route("/resize-ajax", methods=["POST"])
+def resize_ajax():
+    file = request.files.get("image")
+    preset = request.form.get("preset", "insta_post")
+    sizes = {"insta_post": (1080,1080), "insta_story": (1080,1920),
+             "yt_thumb": (1280,720), "linkedin": (1584,396)}
+    if preset not in sizes:
+        return jsonify({"error": "Invalid preset"}), 400
+    img = Image.open(file).convert("RGB")
+    img.thumbnail((sizes[preset][0]*2, sizes[preset][1]*2))
+    canvas = Image.new("RGB", sizes[preset], "white")
+    canvas.paste(img, ((sizes[preset][0]-img.width)//2, (sizes[preset][1]-img.height)//2))
+    path = save_temp(canvas)
+    return send_file(path, as_attachment=True, download_name=f"{preset}.png")
+
+@app.route("/convert-ajax", methods=["POST"])
+def convert_ajax():
+    file = request.files.get("image")
+    fmt = request.form.get("format", "PNG").upper()
+    img = Image.open(file)
+    path = save_temp(img, fmt)
+    return send_file(path, as_attachment=True, download_name=f"converted.{fmt.lower()}")
+
+@app.route("/enhance-ajax", methods=["POST"])
+def enhance_ajax():
+    file = request.files.get("image")
+    img = Image.open(file).convert("RGB")
+    img = ImageEnhance.Sharpness(img).enhance(1.5)
+    img = ImageEnhance.Contrast(img).enhance(1.2)
+    img = ImageEnhance.Color(img).enhance(1.1)
+    path = save_temp(img)
+    return send_file(path, as_attachment=True, download_name="enhanced.png")
+
+# ---------- Privacy / Security ----------
 @app.route("/privacy")
 def privacy():
     return render_template("privacy.html")
