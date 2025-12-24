@@ -1,127 +1,93 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Reality Bender - All-in-One Image Tool{% endblock %}
 
 {% block content %}
-
-<!-- Hero Banner -->
-<section class="hero">
-    <div class="container hero-container">
-        <h1>Ultimate Online Image Toolkit</h1>
-        <p>Remove backgrounds, resize, convert, and enhance images in seconds. Fast, secure, and free!</p>
-        <div class="cta-buttons">
-            <a href="#all-in-one" class="btn primary-btn">Try All-in-One</a>
-            <a href="#features" class="btn secondary-btn">Explore Features</a>
-        </div>
+<!-- Banner Section -->
+<section class="banner">
+    <div class="container">
+        <h1>Reality Bender</h1>
+        <p>All-in-One Image Tools: Remove Background, Passport Photo, Resize, Convert, Enhance</p>
+        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="Reality Bender Banner">
     </div>
 </section>
 
-<!-- Features Grid -->
-<section id="features" class="features">
-    <div class="container features-container">
-        <h2>Our Tools</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <img src="{{ url_for('static', filename='images/remove-bg.png') }}" alt="Remove Background">
-                <h3>Remove Background</h3>
-                <p>Quickly remove image backgrounds in one click.</p>
-                <a href="{{ url_for('remove_bg') }}" class="btn feature-btn">Try Now</a>
+<!-- All-in-One Form Section -->
+<section class="all-in-one">
+    <div class="container">
+        <h2>Process Your Image</h2>
+        <form id="all-in-one-form" enctype="multipart/form-data">
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label for="image">Upload Image</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
             </div>
-            <div class="feature-card">
-                <img src="{{ url_for('static', filename='images/passport.png') }}" alt="Passport Photo">
-                <h3>Passport Photo</h3>
-                <p>Create passport-sized photos with correct dimensions.</p>
-                <a href="{{ url_for('passport') }}" class="btn feature-btn">Try Now</a>
-            </div>
-            <div class="feature-card">
-                <img src="{{ url_for('static', filename='images/resize.png') }}" alt="Resize Image">
-                <h3>Resize for Social Media</h3>
-                <p>Optimize images for Instagram, YouTube, LinkedIn, and more.</p>
-                <a href="{{ url_for('resize') }}" class="btn feature-btn">Try Now</a>
-            </div>
-            <div class="feature-card">
-                <img src="{{ url_for('static', filename='images/convert.png') }}" alt="Convert Image">
-                <h3>Format Converter</h3>
-                <p>Convert images to PNG, JPG, WebP, and more.</p>
-                <a href="{{ url_for('convert') }}" class="btn feature-btn">Try Now</a>
-            </div>
-            <div class="feature-card">
-                <img src="{{ url_for('static', filename='images/enhance.png') }}" alt="Enhance Image">
-                <h3>Image Enhancer</h3>
-                <p>Sharpen, adjust contrast, and enhance colors easily.</p>
-                <a href="{{ url_for('enhance') }}" class="btn feature-btn">Try Now</a>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- All-in-One Embedded Section -->
-<section id="all-in-one" class="all-in-one">
-    <div class="container all-in-one-container">
-        <h2>All-in-One Image Editor</h2>
-        <p>Use any tool directly from this section without leaving the page.</p>
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="remove">Remove Background</button>
-            <button class="tab-btn" data-tab="passport">Passport</button>
-            <button class="tab-btn" data-tab="resize">Resize</button>
-            <button class="tab-btn" data-tab="convert">Convert</button>
-            <button class="tab-btn" data-tab="enhance">Enhance</button>
-        </div>
-
-        <div class="tab-content active" id="remove">
-            <form id="remove-form" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" required>
-                <button type="submit" class="btn primary-btn">Remove Background</button>
-            </form>
-            <div id="remove-result"></div>
-        </div>
-
-        <div class="tab-content" id="passport">
-            <form id="passport-form" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" required>
-                <select name="size">
-                    <option value="US">US</option>
-                    <option value="PK">PK</option>
-                    <option value="EU">EU</option>
+            <!-- Feature Selection -->
+            <div class="form-group">
+                <label for="feature-select">Choose Feature</label>
+                <select id="feature-select" name="feature">
+                    <option value="remove-bg">Remove Background</option>
+                    <option value="passport">Passport Photo</option>
+                    <option value="resize">Resize for Social Media</option>
+                    <option value="convert">Convert Format</option>
+                    <option value="enhance">Enhance Image</option>
                 </select>
-                <button type="submit" class="btn primary-btn">Generate Passport</button>
-            </form>
-            <div id="passport-result"></div>
-        </div>
+            </div>
 
-        <div class="tab-content" id="resize">
-            <form id="resize-form" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" required>
-                <select name="preset">
-                    <option value="insta_post">Instagram Post</option>
-                    <option value="insta_story">Instagram Story</option>
-                    <option value="yt_thumb">YouTube Thumbnail</option>
-                    <option value="linkedin">LinkedIn Banner</option>
+            <!-- Extra Options -->
+            <div id="size-options" class="extra-options" style="display:none;">
+                <label for="size-select">Passport Size</label>
+                <select id="size-select" name="size">
+                    <option value="US">US (600x600)</option>
+                    <option value="PK">PK (413x531)</option>
+                    <option value="EU">EU (413x531)</option>
                 </select>
-                <button type="submit" class="btn primary-btn">Resize Image</button>
-            </form>
-            <div id="resize-result"></div>
-        </div>
+            </div>
 
-        <div class="tab-content" id="convert">
-            <form id="convert-form" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" required>
-                <select name="format">
+            <div id="preset-options" class="extra-options" style="display:none;">
+                <label for="preset-select">Resize Preset</label>
+                <select id="preset-select" name="preset">
+                    <option value="insta_post">Instagram Post (1080x1080)</option>
+                    <option value="insta_story">Instagram Story (1080x1920)</option>
+                    <option value="yt_thumb">YouTube Thumbnail (1280x720)</option>
+                    <option value="linkedin">LinkedIn Banner (1584x396)</option>
+                </select>
+            </div>
+
+            <div id="format-options" class="extra-options" style="display:none;">
+                <label for="format-select">Convert Format</label>
+                <select id="format-select" name="format">
                     <option value="PNG">PNG</option>
                     <option value="JPG">JPG</option>
-                    <option value="WEBP">WebP</option>
+                    <option value="WEBP">WEBP</option>
+                    <option value="GIF">GIF</option>
+                    <option value="BMP">BMP</option>
                 </select>
-                <button type="submit" class="btn primary-btn">Convert Image</button>
-            </form>
-            <div id="convert-result"></div>
-        </div>
+            </div>
 
-        <div class="tab-content" id="enhance">
-            <form id="enhance-form" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" required>
-                <button type="submit" class="btn primary-btn">Enhance Image</button>
-            </form>
-            <div id="enhance-result"></div>
-        </div>
+            <button type="submit" class="btn">Process Image</button>
+        </form>
+
+        <!-- Result Box -->
+        <div id="result-box" class="result-box"></div>
     </div>
 </section>
 
+<!-- SEO Section -->
+<section class="seo-section">
+    <div class="container">
+        <h3>Reality Bender Features</h3>
+        <ul>
+            <li>Remove background from any image with AI precision</li>
+            <li>Create passport photos in US, PK, and EU sizes</li>
+            <li>Resize images for Instagram, YouTube, LinkedIn, and more</li>
+            <li>Convert images into PNG, JPG, WEBP, GIF, or BMP</li>
+            <li>Enhance images with sharpness, contrast, and color improvements</li>
+        </ul>
+        <p>Optimize your workflow and get professional-quality images instantly with Reality Bender.</p>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
