@@ -7,79 +7,172 @@
 
     <!-- SEO Meta Tags -->
     <meta name="description" content="Free AI Image Tools: Background Remover, Passport Maker, Resizer, Converter, Enhancer. Fast, professional tools for creators.">
-    <meta name="keywords" content="AI Image Tools, Background Remover, Passport Photo Maker, Meme Generator, Image Translator, Social Media Resizer, Image Converter, Image Enhancer, Free Image Editor">
+    <meta name="keywords" content="AI Image Tools, Background Remover, Passport Photo Maker, Social Media Resizer, Image Converter, Image Enhancer, Free Image Editor">
     <meta name="author" content="Reality Bender Tools">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 min-h-screen">
 
     <!-- Header -->
-    <header class="bg-blue-600 text-white p-4 text-center text-2xl font-bold">
-        Reality Bender Tools
+    <header class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-2xl">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-4xl font-bold text-center">🎨 Reality Bender Tools</h1>
+            <p class="text-center mt-2 text-sm opacity-90">Professional AI-Powered Image Tools | 100% Free</p>
+        </div>
     </header>
 
-    <!-- Ad Placeholder -->
-    <div class="ad-slot text-center my-4">
-        <!-- Replace with AdSense code -->
-        Ad Slot 1
-    </div>
-
-    <main class="container mx-auto p-4">
+    <main class="container mx-auto p-4 max-w-5xl">
 
         <!-- Image Upload Section -->
-        <section class="my-4 p-4 bg-white rounded shadow">
-            <h2 class="text-xl font-semibold mb-2">Upload Image</h2>
-            <form id="imageForm" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" class="border p-2 w-full mb-2" required>
+        <section class="my-8 p-6 bg-white rounded-2xl shadow-xl fade-in">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">📸</span>
+                <h2 class="text-3xl font-bold text-gray-800">Image Tools</h2>
+            </div>
+            
+            <form id="imageForm" enctype="multipart/form-data" class="space-y-5">
+                <!-- File Upload -->
+                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-500 transition">
+                    <label class="block text-center cursor-pointer">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span class="mt-2 block text-sm font-medium text-gray-700">
+                            Click to upload or drag and drop
+                        </span>
+                        <span class="mt-1 block text-xs text-gray-500">
+                            PNG, JPG, WEBP up to 16MB
+                        </span>
+                        <input type="file" name="image" accept="image/*" class="hidden" required id="fileInput">
+                    </label>
+                    <div id="fileName" class="mt-3 text-center text-sm text-gray-600"></div>
+                </div>
                 
                 <!-- Tool Selection -->
-                <select name="tool" id="tool" class="border p-2 w-full mb-2" required>
-                    <option value="remove-bg">Background Remover</option>
-                    <option value="passport">Passport Maker</option>
-                    <option value="resize">Social Media Resizer</option>
-                    <option value="convert">Image Converter</option>
-                    <option value="enhance">AI Image Enhancer</option>
-                </select>
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-700">Select Tool</label>
+                    <select name="tool" id="tool" class="border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none bg-white text-gray-800 font-medium" required>
+                        <option value="remove-bg">🎭 Background Remover</option>
+                        <option value="passport">📷 Passport Photo Maker</option>
+                        <option value="resize">📱 Social Media Resizer</option>
+                        <option value="convert">🔄 Format Converter</option>
+                        <option value="enhance">✨ AI Image Enhancer</option>
+                    </select>
+                </div>
 
-                <!-- Additional options for each tool -->
-                <div id="options" class="mb-2"></div>
+                <!-- Dynamic Options -->
+                <div id="options" class="space-y-3"></div>
 
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Process Image</button>
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-4 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-[1.02] transition shadow-lg">
+                    🚀 Process Image
+                </button>
             </form>
-            <div id="result" class="mt-4"></div>
+            
+            <!-- Loading Indicator -->
+            <div id="loading" class="hidden mt-6 text-center">
+                <div class="loader mx-auto"></div>
+                <p class="mt-4 text-gray-600 font-medium">Processing your image...</p>
+                <p class="text-sm text-gray-500 mt-1">This may take 10-30 seconds</p>
+            </div>
+            
+            <!-- Result Display -->
+            <div id="result" class="mt-6"></div>
         </section>
 
         <!-- AI Text Tool Section -->
-        <section class="my-4 p-4 bg-white rounded shadow">
-            <h2 class="text-xl font-semibold mb-2">AI Description / Chat</h2>
-            <form id="aiForm">
-                <textarea name="text" placeholder="Enter text..." class="border p-2 w-full mb-2" required></textarea>
-                <select name="provider" class="border p-2 w-full mb-2" required>
-                    <option value="gemini">Google Gemini AI</option>
-                    <option value="groq">Groq AI</option>
-                </select>
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Generate</button>
+        <section class="my-8 p-6 bg-white rounded-2xl shadow-xl fade-in">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">🤖</span>
+                <h2 class="text-3xl font-bold text-gray-800">AI Chat & Description</h2>
+            </div>
+            
+            <form id="aiForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-700">Enter Your Prompt</label>
+                    <textarea name="text" placeholder="Ask anything or describe what you need..." class="border-2 border-gray-300 p-4 w-full rounded-lg h-40 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none resize-none" required></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-700">AI Provider</label>
+                    <select name="provider" class="border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none bg-white font-medium" required>
+                        <option value="gemini">🧠 Google Gemini AI</option>
+                        <option value="groq">⚡ Groq AI (Lightning Fast)</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white px-6 py-4 rounded-lg font-bold text-lg hover:from-green-700 hover:to-teal-700 transform hover:scale-[1.02] transition shadow-lg">
+                    ✨ Generate Response
+                </button>
             </form>
-            <div id="aiResult" class="mt-4"></div>
+            
+            <!-- AI Loading -->
+            <div id="aiLoading" class="hidden mt-6 text-center">
+                <div class="loader mx-auto"></div>
+                <p class="mt-4 text-gray-600 font-medium">Generating response...</p>
+            </div>
+            
+            <!-- AI Result -->
+            <div id="aiResult" class="mt-6"></div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="my-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl shadow-lg">
+            <h3 class="text-2xl font-bold text-center mb-6 text-gray-800">Why Choose Reality Bender?</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center p-4">
+                    <div class="text-4xl mb-3">⚡</div>
+                    <h4 class="font-semibold mb-2">Lightning Fast</h4>
+                    <p class="text-sm text-gray-600">Process images in seconds with AI</p>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl mb-3">🔒</div>
+                    <h4 class="font-semibold mb-2">100% Private</h4>
+                    <p class="text-sm text-gray-600">Your images are never stored</p>
+                </div>
+                <div class="text-center p-4">
+                    <div class="text-4xl mb-3">💯</div>
+                    <h4 class="font-semibold mb-2">Completely Free</h4>
+                    <p class="text-sm text-gray-600">No hidden costs or limits</p>
+                </div>
+            </div>
         </section>
 
     </main>
 
-    <!-- Middle Ad Placeholder -->
-    <div class="ad-slot text-center my-4">
-        Ad Slot 2
-    </div>
-
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white p-4 text-center">
-        &copy; 2025 Reality Bender Tools
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-xl font-bold mb-2">Reality Bender Tools</p>
+            <p class="text-sm text-gray-400">&copy; 2025 All Rights Reserved</p>
+            <p class="text-xs text-gray-500 mt-3">Built with ❤️ for creators everywhere</p>
+        </div>
     </footer>
-
-    <!-- Bottom Ad Placeholder -->
-    <div class="ad-slot text-center my-4">
-        Ad Slot 3
-    </div>
 
     <!-- Scripts -->
     <script>
@@ -87,34 +180,56 @@
         const optionsDiv = document.getElementById('options');
         const imageForm = document.getElementById('imageForm');
         const resultDiv = document.getElementById('result');
+        const loadingDiv = document.getElementById('loading');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+
+        // Show selected file name
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const size = (file.size / 1024 / 1024).toFixed(2);
+                fileName.innerHTML = `<span class="text-blue-600 font-semibold">✓ ${file.name}</span> <span class="text-gray-500">(${size} MB)</span>`;
+            }
+        });
 
         function updateOptions() {
             const tool = toolSelect.value;
             optionsDiv.innerHTML = '';
+            
             if (tool === 'passport') {
                 optionsDiv.innerHTML = `
-                    <select name="size" class="border p-2 w-full mb-2">
-                        <option value="US">US 2x2</option>
-                        <option value="PK">PK 35x45mm</option>
-                        <option value="EU">EU Passport</option>
-                    </select>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Passport Size</label>
+                        <select name="size" class="border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none bg-white">
+                            <option value="US">🇺🇸 US Passport (2x2 inches)</option>
+                            <option value="PK">🇵🇰 Pakistan (35x45mm)</option>
+                            <option value="EU">🇪🇺 EU Passport (35x45mm)</option>
+                        </select>
+                    </div>
                 `;
             } else if (tool === 'resize') {
                 optionsDiv.innerHTML = `
-                    <select name="preset" class="border p-2 w-full mb-2">
-                        <option value="insta_post">Instagram Post</option>
-                        <option value="insta_story">Instagram Story</option>
-                        <option value="yt_thumb">YouTube Thumbnail</option>
-                        <option value="linkedin">LinkedIn Banner</option>
-                    </select>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Social Media Preset</label>
+                        <select name="preset" class="border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none bg-white">
+                            <option value="insta_post">📸 Instagram Post (1080x1080)</option>
+                            <option value="insta_story">📱 Instagram Story (1080x1920)</option>
+                            <option value="yt_thumb">🎥 YouTube Thumbnail (1280x720)</option>
+                            <option value="linkedin">💼 LinkedIn Banner (1584x396)</option>
+                        </select>
+                    </div>
                 `;
             } else if (tool === 'convert') {
                 optionsDiv.innerHTML = `
-                    <select name="format" class="border p-2 w-full mb-2">
-                        <option value="PNG">PNG</option>
-                        <option value="JPG">JPG</option>
-                        <option value="WEBP">WEBP</option>
-                    </select>
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">Output Format</label>
+                        <select name="format" class="border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none bg-white">
+                            <option value="PNG">PNG (Best Quality, Transparency)</option>
+                            <option value="JPG">JPG (Smaller Size)</option>
+                            <option value="WEBP">WEBP (Modern, Efficient)</option>
+                        </select>
+                    </div>
                 `;
             }
         }
@@ -124,9 +239,12 @@
 
         imageForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            resultDiv.innerHTML = 'Processing...';
+            resultDiv.innerHTML = '';
+            loadingDiv.classList.remove('hidden');
+            
             const formData = new FormData(imageForm);
             let endpoint = '';
+            
             switch (formData.get('tool')) {
                 case 'remove-bg': endpoint = '/remove-bg'; break;
                 case 'passport': endpoint = '/passport'; break;
@@ -134,22 +252,97 @@
                 case 'convert': endpoint = '/convert'; break;
                 case 'enhance': endpoint = '/enhance'; break;
             }
-            const res = await fetch(endpoint, { method: 'POST', body: formData });
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            resultDiv.innerHTML = `<a href="${url}" download="result.png">Download Processed Image</a><br><img src="${url}" class="mt-2 max-w-full">`;
+            
+            try {
+                const res = await fetch(endpoint, { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                if (!res.ok) {
+                    const error = await res.json();
+                    throw new Error(error.error || 'Processing failed');
+                }
+                
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                
+                resultDiv.innerHTML = `
+                    <div class="border-2 border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl fade-in shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl mr-3">✅</span>
+                            <p class="text-green-700 font-bold text-xl">Image Processed Successfully!</p>
+                        </div>
+                        <a href="${url}" download="result.png" class="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition font-bold shadow-md mb-4">
+                            ⬇️ Download Image
+                        </a>
+                        <div class="mt-4 border-2 border-gray-200 rounded-lg overflow-hidden">
+                            <img src="${url}" class="max-w-full mx-auto" alt="Processed image">
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="border-2 border-red-500 bg-red-50 p-6 rounded-xl fade-in">
+                        <div class="flex items-center mb-3">
+                            <span class="text-3xl mr-3">❌</span>
+                            <p class="text-red-700 font-bold text-xl">Processing Failed</p>
+                        </div>
+                        <p class="text-red-600">${error.message}</p>
+                        <p class="text-sm text-gray-600 mt-2">Please try again with a different image or check your file size.</p>
+                    </div>
+                `;
+            } finally {
+                loadingDiv.classList.add('hidden');
+            }
         });
 
         const aiForm = document.getElementById('aiForm');
         const aiResult = document.getElementById('aiResult');
+        const aiLoadingDiv = document.getElementById('aiLoading');
 
         aiForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            aiResult.innerHTML = 'Generating...';
+            aiResult.innerHTML = '';
+            aiLoadingDiv.classList.remove('hidden');
+            
             const formData = new FormData(aiForm);
-            const res = await fetch('/ai-describe', { method: 'POST', body: formData });
-            const data = await res.json();
-            aiResult.innerHTML = `<pre>${data.result}</pre>`;
+            
+            try {
+                const res = await fetch('/ai-describe', { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'AI generation failed');
+                }
+                
+                aiResult.innerHTML = `
+                    <div class="border-2 border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl fade-in shadow-lg">
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl mr-3">✅</span>
+                            <p class="text-green-700 font-bold text-xl">Response Generated!</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border-2 border-gray-200 whitespace-pre-wrap text-gray-800 leading-relaxed shadow-inner">${data.result}</div>
+                    </div>
+                `;
+            } catch (error) {
+                aiResult.innerHTML = `
+                    <div class="border-2 border-red-500 bg-red-50 p-6 rounded-xl fade-in">
+                        <div class="flex items-center mb-3">
+                            <span class="text-3xl mr-3">❌</span>
+                            <p class="text-red-700 font-bold text-xl">Generation Failed</p>
+                        </div>
+                        <p class="text-red-600 mb-2">${error.message}</p>
+                        <p class="text-sm text-gray-600">Make sure API keys are configured in your Render environment variables.</p>
+                    </div>
+                `;
+            } finally {
+                aiLoadingDiv.classList.add('hidden');
+            }
         });
     </script>
 
