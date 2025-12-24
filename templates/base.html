@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ultimate AI Image Tools - Remove Background, Passport Photo, Resize, Convert, Enhance. Fast, Free, and Easy!">
-    <meta name="keywords" content="AI image tools, remove background, image enhancer, passport photo maker, image resizer, image converter">
-    <title>Reality Bender - AI Image Tools</title>
+    <meta name="description" content="Reality-Bender: Ultimate online image toolkit. Remove background, resize, convert, and enhance images online. Free and fast image editing tools.">
+    <meta name="keywords" content="online image editor, remove background, image enhancer, image converter, resize images, free online photo tools">
+    <title>Reality-Bender | Online Image Toolkit</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
 </head>
 <body>
-    <!-- Header / Navbar -->
+    <!-- Header -->
     <header>
-        <nav class="navbar">
-            <div class="logo"><a href="{{ url_for('index') }}">Reality Bender</a></div>
-            <ul class="nav-links">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('remove_bg') }}">Remove BG</a></li>
-                <li><a href="{{ url_for('passport') }}">Passport</a></li>
-                <li><a href="{{ url_for('resize') }}">Resize</a></li>
-                <li><a href="{{ url_for('convert') }}">Convert</a></li>
-                <li><a href="{{ url_for('enhance') }}">Enhance</a></li>
-                <li><a href="{{ url_for('privacy') }}">Privacy</a></li>
-                <li><a href="{{ url_for('security') }}">Security</a></li>
-            </ul>
-            <div class="mobile-menu">☰</div>
-        </nav>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="{{ url_for('index') }}">Reality-Bender</a>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#all-in-one">All-in-One</a></li>
+                    <li><a href="{{ url_for('privacy') }}">Privacy</a></li>
+                    <li><a href="{{ url_for('security') }}">Security</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <!-- Page Content -->
+    <!-- Main Content -->
     <main>
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </main>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 Reality Bender. All Rights Reserved.</p>
-        <p>Ads Placeholder</p>
+        <div class="container footer-container">
+            <p>&copy; 2025 Reality-Bender. All Rights Reserved.</p>
+            <div class="social-links">
+                <a href="#" target="_blank">Facebook</a> |
+                <a href="#" target="_blank">Twitter</a> |
+                <a href="#" target="_blank">Instagram</a>
+            </div>
+        </div>
     </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
