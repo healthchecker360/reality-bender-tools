@@ -2,49 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Reality-Bender: Ultimate online image toolkit. Remove background, resize, convert, and enhance images online. Free and fast image editing tools.">
-    <meta name="keywords" content="online image editor, remove background, image enhancer, image converter, resize images, free online photo tools">
-    <title>Reality-Bender | Online Image Toolkit</title>
+    <title>{% block title %}Reality Bender – AI Image Tools{% endblock %}</title>
+    <meta name="description" content="Free AI image tools – background remover, passport photo maker, image resizer, converter, enhancer.">
+    <meta name="keywords" content="remove background, passport photo, image resize, image converter, image enhancer">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <a href="{{ url_for('index') }}">Reality-Bender</a>
-            </div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#all-in-one">All-in-One</a></li>
-                    <li><a href="{{ url_for('privacy') }}">Privacy</a></li>
-                    <li><a href="{{ url_for('security') }}">Security</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Main Content -->
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+<header>
+    <nav>
+        <a href="/" class="logo">Reality Bender</a>
+        <a href="/remove-bg">Remove BG</a>
+        <a href="/passport">Passport</a>
+        <a href="/resize">Resize</a>
+        <a href="/convert">Convert</a>
+        <a href="/enhance">Enhance</a>
+    </nav>
+</header>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-container">
-            <p>&copy; 2025 Reality-Bender. All Rights Reserved.</p>
-            <div class="social-links">
-                <a href="#" target="_blank">Facebook</a> |
-                <a href="#" target="_blank">Twitter</a> |
-                <a href="#" target="_blank">Instagram</a>
-            </div>
-        </div>
-    </footer>
+<main>
+{% block content %}{% endblock %}
+</main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<footer>
+    <p>© 2025 Reality Bender • Free AI Image Tools</p>
+    <a href="/privacy">Privacy</a> |
+    <a href="/security">Security</a>
+</footer>
+
 </body>
 </html>
