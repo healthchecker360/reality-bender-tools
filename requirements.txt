@@ -1,6 +1,2 @@
 Flask
-Flask-CORS
 Pillow
-rembg
-onnxruntime
-gunicorn
