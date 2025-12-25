@@ -1,31 +1,54 @@
 {% extends "base.html" %}
 
-{% block content %}
-<section class="feature-page">
-    <h1>Create Passport Photos</h1>
-    <p>Generate perfectly sized passport photos for any country. Our AI tool automatically detects face and resizes the photo according to official standards.</p>
+{% block title %}Passport Photo Maker Online | US, PK, EU Sizes{% endblock %}
 
-    <form action="{{ url_for('passport') }}" method="POST" enctype="multipart/form-data" class="image-form">
+{% block content %}
+
+<section class="container">
+    <h1>Passport & Visa Photo Maker</h1>
+    <p>
+        Create passport and visa photos online that meet official size requirements.
+        Supports US, Pakistan, and European passport standards.
+    </p>
+
+    <!-- ================= FORM ================= -->
+    <form method="POST" enctype="multipart/form-data" class="tool-form">
+
+        <label>Upload Your Photo</label>
         <input type="file" name="image" accept="image/*" required>
-        <select name="country">
-            <option value="usa">USA</option>
-            <option value="uk">UK</option>
-            <option value="india">India</option>
-            <option value="canada">Canada</option>
+
+        <label>Select Country / Size</label>
+        <select name="size" required>
+            <option value="US">United States (2×2 inch)</option>
+            <option value="PK">Pakistan (35×45 mm)</option>
+            <option value="EU">Europe (35×45 mm)</option>
         </select>
-        <button type="submit" class="btn">Create Passport Photo</button>
+
+        <button type="submit">Create Passport Photo</button>
     </form>
 
-    {% if output_image %}
-        <div class="result">
-            <h3>Result:</h3>
-            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Passport Photo">
-            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
-        </div>
-    {% endif %}
-    
-    <p class="seo-text">
-        Passport photo maker, AI passport photo, photo resize tool, online passport photo generator, free passport photo editor.
-    </p>
+    <!-- ================= AD SLOT ================= -->
+    <div class="ad-slot">
+        Advertisement
+    </div>
+
+    <!-- ================= SEO CONTENT ================= -->
+    <section style="margin-top:40px;">
+        <h2>Official Passport Photo Standards</h2>
+        <p>
+            Passport photos require proper size, white background, centered face,
+            and correct head proportions. Our tool automatically adjusts your image
+            to meet official requirements.
+        </p>
+
+        <h2>Why Use Our Passport Photo Tool?</h2>
+        <ul>
+            <li>AI background removal</li>
+            <li>Correct face centering</li>
+            <li>White background as required</li>
+            <li>Ready-to-print passport photos</li>
+        </ul>
+    </section>
 </section>
+
 {% endblock %}
