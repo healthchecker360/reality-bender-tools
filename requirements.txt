@@ -4,6 +4,3 @@ Pillow
 rembg
 onnxruntime
 gunicorn
-requests
-google-generativeai
-groq
