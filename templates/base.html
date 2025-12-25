@@ -1,36 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- BASIC SEO -->
     <meta charset="UTF-8">
-    <title>{% block title %}Reality Bender – AI Image Tools{% endblock %}</title>
-    <meta name="description" content="Free AI image tools – background remover, passport photo maker, image resizer, converter, enhancer.">
-    <meta name="keywords" content="remove background, passport photo, image resize, image converter, image enhancer">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reality Bender – Free AI Image Tools. Remove background, resize images, passport photos, convert formats, and enhance images online.">
+    <meta name="keywords" content="remove background, image resize, passport photo maker, image converter, image enhancer, free image tools">
+    <meta name="author" content="Reality Bender">
 
+    <title>{% block title %}Reality Bender – Free Image Tools{% endblock %}</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body>
 
-<header>
-    <nav>
-        <a href="/" class="logo">Reality Bender</a>
-        <a href="/remove-bg">Remove BG</a>
-        <a href="/passport">Passport</a>
-        <a href="/resize">Resize</a>
-        <a href="/convert">Convert</a>
-        <a href="/enhance">Enhance</a>
-    </nav>
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+    <div class="container nav-container">
+        <div class="logo">
+            <a href="/">Reality<span>Bender</span></a>
+        </div>
+        <nav class="nav-menu">
+            <a href="/">Home</a>
+            <a href="/remove-bg">Remove BG</a>
+            <a href="/passport">Passport</a>
+            <a href="/resize">Resize</a>
+            <a href="/convert">Convert</a>
+            <a href="/enhance">Enhance</a>
+            <a href="/privacy">Privacy</a>
+            <a href="/security">Security</a>
+        </nav>
+    </div>
 </header>
 
-<main>
-{% block content %}{% endblock %}
+<!-- ================= HEADER AD ================= -->
+<div class="ad-slot header-ad">
+    <!-- AdSense Header Ad -->
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main class="main-content">
+    {% block content %}{% endblock %}
 </main>
 
-<footer>
-    <p>© 2025 Reality Bender • Free AI Image Tools</p>
-    <a href="/privacy">Privacy</a> |
-    <a href="/security">Security</a>
+<!-- ================= FOOTER AD ================= -->
+<div class="ad-slot footer-ad">
+    <!-- AdSense Footer Ad -->
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <div class="container footer-container">
+        <div class="footer-about">
+            <h3>Reality Bender</h3>
+            <p>All-in-one free image tools to edit, resize, convert, and enhance your images instantly.</p>
+        </div>
+
+        <div class="footer-links">
+            <h4>Tools</h4>
+            <a href="/remove-bg">Remove Background</a>
+            <a href="/passport">Passport Photo</a>
+            <a href="/resize">Resize Images</a>
+            <a href="/convert">Convert Format</a>
+            <a href="/enhance">Enhance Image</a>
+        </div>
+
+        <div class="footer-links">
+            <h4>Legal</h4>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/security">Security</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2025 Reality Bender. All rights reserved.</p>
+    </div>
 </footer>
 
 </body>
