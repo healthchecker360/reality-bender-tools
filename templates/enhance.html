@@ -1,25 +1,46 @@
 {% extends "base.html" %}
 
-{% block content %}
-<section class="feature-page">
-    <h1>Enhance Images</h1>
-    <p>Improve sharpness, colors, brightness, and contrast automatically using AI-powered enhancement.</p>
+{% block title %}Image Enhancer Online | Sharpen, Color & Contrast{% endblock %}
 
-    <form action="{{ url_for('enhance') }}" method="POST" enctype="multipart/form-data" class="image-form">
+{% block content %}
+
+<section class="container">
+    <h1>Image Enhancer</h1>
+    <p>
+        Instantly enhance your images with sharper details, better contrast, 
+        and vibrant colors. Perfect for social media, websites, or printing.
+    </p>
+
+    <!-- ================= FORM ================= -->
+    <form method="POST" enctype="multipart/form-data" class="tool-form">
+        <label>Upload Image</label>
         <input type="file" name="image" accept="image/*" required>
-        <button type="submit" class="btn">Enhance Image</button>
+
+        <button type="submit">Enhance Image</button>
     </form>
 
-    {% if output_image %}
-        <div class="result">
-            <h3>Result:</h3>
-            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Enhanced Image">
-            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
-        </div>
-    {% endif %}
-    
-    <p class="seo-text">
-        Image enhancer, AI image enhancement, photo enhancement online, sharpen images, improve colors, free image enhancer.
-    </p>
+    <!-- ================= AD SLOT ================= -->
+    <div class="ad-slot">
+        Advertisement
+    </div>
+
+    <!-- ================= SEO CONTENT ================= -->
+    <section style="margin-top:40px;">
+        <h2>Why Enhance Images?</h2>
+        <p>
+            Enhancing images improves visual quality, making your photos more 
+            appealing and professional. Boost sharpness, contrast, and colors 
+            in a single click.
+        </p>
+
+        <h2>Key Features:</h2>
+        <ul>
+            <li>Sharpen blurred images</li>
+            <li>Increase contrast for depth</li>
+            <li>Enhance color vibrancy</li>
+            <li>Optimized for web & social media</li>
+        </ul>
+    </section>
 </section>
+
 {% endblock %}
