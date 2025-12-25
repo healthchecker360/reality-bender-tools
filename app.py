@@ -1,23 +1,25 @@
 from flask import Flask, render_template, request, send_file
 from PIL import Image, ImageOps
-import os, uuid
+import uuid, os, base64
+from io import BytesIO
 
 app = Flask(__name__)
 TMP = "/tmp"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    preview_image = None
+    download_id = None
+
     if request.method == "POST":
-        img = request.files["image"]
+        image_file = request.files["image"]
         tool = request.form["tool"]
         fmt = request.form["format"]
 
         uid = str(uuid.uuid4())
-        in_path = f"{TMP}/{uid}_in"
-        out_path = f"{TMP}/{uid}_out.{fmt}"
+        out_path = f"{TMP}/{uid}.{fmt}"
 
-        image = Image.open(img).convert("RGB")
-        image.save(in_path)
+        image = Image.open(image_file).convert("RGB")
 
         sizes = {
             "passport_us": (600, 600),
@@ -30,9 +32,22 @@ def index():
         image = ImageOps.fit(image, sizes[tool], centering=(0.5, 0.5))
         image.save(out_path, optimize=True, quality=85)
 
-        return send_file(out_path, as_attachment=True)
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        preview_image = base64.b64encode(buffer.getvalue()).decode()
+        download_id = uid + "." + fmt
 
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        preview_image=preview_image,
+        download_id=download_id
+    )
+
+@app.route("/download/<filename>")
+def download(filename):
+    path = f"{TMP}/{filename}"
+    return send_file(path, as_attachment=True)
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
