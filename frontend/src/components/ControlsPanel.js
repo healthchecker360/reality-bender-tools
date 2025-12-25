@@ -1,110 +1,38 @@
 import React from 'react';
 
-const ControlsPanel = ({ settings, setSettings }) => {
+function ControlsPanel({ controls, setControls, onProcess }) {
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setControls(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
   return (
-    <div className="mb-4 p-4 bg-white rounded shadow-md">
-      <h2 className="text-lg font-semibold mb-2">Image Controls</h2>
-
-      {/* Resize */}
-      <div className="flex gap-2 mb-2">
-        <input
-          type="number"
-          placeholder="Width"
-          value={settings.width}
-          onChange={(e) => setSettings({ ...settings, width: e.target.value })}
-          className="p-2 border rounded w-24"
-        />
-        <input
-          type="number"
-          placeholder="Height"
-          value={settings.height}
-          onChange={(e) => setSettings({ ...settings, height: e.target.value })}
-          className="p-2 border rounded w-24"
-        />
-      </div>
-
-      {/* Format */}
-      <div className="flex gap-2 mb-2">
-        <label className="font-medium">Format:</label>
-        <select
-          value={settings.format}
-          onChange={(e) => setSettings({ ...settings, format: e.target.value })}
-          className="p-2 border rounded"
-        >
-          <option value="png">PNG</option>
-          <option value="jpg">JPG</option>
-          <option value="webp">WebP</option>
-          <option value="avif">AVIF</option>
-          <option value="bmp">BMP</option>
-          <option value="gif">GIF</option>
-          <option value="tiff">TIFF</option>
-        </select>
-      </div>
-
-      {/* Enhancement sliders */}
-      <div className="mb-2">
-        <label className="block font-medium">Brightness: {settings.brightness}</label>
-        <input
-          type="range"
-          min="0.1"
-          max="3"
-          step="0.1"
-          value={settings.brightness}
-          onChange={(e) => setSettings({ ...settings, brightness: e.target.value })}
-          className="w-full"
-        />
-      </div>
-
-      <div className="mb-2">
-        <label className="block font-medium">Contrast: {settings.contrast}</label>
-        <input
-          type="range"
-          min="0.1"
-          max="3"
-          step="0.1"
-          value={settings.contrast}
-          onChange={(e) => setSettings({ ...settings, contrast: e.target.value })}
-          className="w-full"
-        />
-      </div>
-
-      <div className="mb-2">
-        <label className="block font-medium">Saturation: {settings.saturation}</label>
-        <input
-          type="range"
-          min="0.1"
-          max="3"
-          step="0.1"
-          value={settings.saturation}
-          onChange={(e) => setSettings({ ...settings, saturation: e.target.value })}
-          className="w-full"
-        />
-      </div>
-
-      <div className="mb-2">
-        <label className="block font-medium">Sharpness: {settings.sharpness}</label>
-        <input
-          type="range"
-          min="0"
-          max="10"
-          step="0.5"
-          value={settings.sharpness}
-          onChange={(e) => setSettings({ ...settings, sharpness: e.target.value })}
-          className="w-full"
-        />
-      </div>
-
-      {/* AI Background Removal */}
-      <div className="flex items-center gap-2 mt-2">
-        <input
-          type="checkbox"
-          checked={settings.removeBg}
-          onChange={(e) => setSettings({ ...settings, removeBg: e.target.checked })}
-        />
-        <label className="font-medium">AI Background Removal</label>
-      </div>
+    <div className="mb-4 grid grid-cols-2 gap-2">
+      <input type="number" name="width" placeholder="Width" value={controls.width} onChange={handleChange} className="border p-2" />
+      <input type="number" name="height" placeholder="Height" value={controls.height} onChange={handleChange} className="border p-2" />
+      <input type="number" name="rotate" placeholder="Rotate (deg)" value={controls.rotate} onChange={handleChange} className="border p-2" />
+      <select name="flip" value={controls.flip} onChange={handleChange} className="border p-2">
+        <option value="">Flip</option>
+        <option value="horizontal">Horizontal</option>
+        <option value="vertical">Vertical</option>
+      </select>
+      <select name="format" value={controls.format} onChange={handleChange} className="border p-2">
+        <option value="png">PNG</option>
+        <option value="jpeg">JPEG</option>
+        <option value="webp">WEBP</option>
+      </select>
+      <input type="number" name="quality" placeholder="Quality 0-100" value={controls.quality} onChange={handleChange} className="border p-2" />
+      <input type="number" name="brightness" step="0.1" placeholder="Brightness" value={controls.brightness} onChange={handleChange} className="border p-2" />
+      <input type="number" name="contrast" step="0.1" placeholder="Contrast" value={controls.contrast} onChange={handleChange} className="border p-2" />
+      <input type="number" name="saturation" step="0.1" placeholder="Saturation" value={controls.saturation} onChange={handleChange} className="border p-2" />
+      <input type="number" name="sharpness" step="0.1" placeholder="Sharpness" value={controls.sharpness} onChange={handleChange} className="border p-2" />
+      <label className="flex items-center">
+        <input type="checkbox" name="aiBackground" checked={controls.aiBackground} onChange={handleChange} className="mr-2" />
+        AI Background Remove
+      </label>
+      <button onClick={onProcess} className="col-span-2 bg-blue-500 text-white p-2 rounded">Process Image</button>
     </div>
   );
-};
+}
 
 export default ControlsPanel;
