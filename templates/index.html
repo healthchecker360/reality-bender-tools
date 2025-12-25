@@ -1,93 +1,21 @@
 {% extends "base.html" %}
-
-{% block title %}Reality Bender - All-in-One Image Tool{% endblock %}
+{% block title %}Reality Bender – All-in-One Image Tools{% endblock %}
 
 {% block content %}
-<!-- Banner Section -->
-<section class="banner">
-    <div class="container">
-        <h1>Reality Bender</h1>
-        <p>All-in-One Image Tools: Remove Background, Passport Photo, Resize, Convert, Enhance</p>
-        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="Reality Bender Banner">
-    </div>
+<section class="hero">
+    <h1>All-in-One AI Image Tools</h1>
+    <p>Remove background, resize images, make passport photos & enhance quality – free.</p>
 </section>
 
-<!-- All-in-One Form Section -->
-<section class="all-in-one">
-    <div class="container">
-        <h2>Process Your Image</h2>
-        <form id="all-in-one-form" enctype="multipart/form-data">
-            <!-- Image Upload -->
-            <div class="form-group">
-                <label for="image">Upload Image</label>
-                <input type="file" id="image" name="image" accept="image/*" required>
-            </div>
-
-            <!-- Feature Selection -->
-            <div class="form-group">
-                <label for="feature-select">Choose Feature</label>
-                <select id="feature-select" name="feature">
-                    <option value="remove-bg">Remove Background</option>
-                    <option value="passport">Passport Photo</option>
-                    <option value="resize">Resize for Social Media</option>
-                    <option value="convert">Convert Format</option>
-                    <option value="enhance">Enhance Image</option>
-                </select>
-            </div>
-
-            <!-- Extra Options -->
-            <div id="size-options" class="extra-options" style="display:none;">
-                <label for="size-select">Passport Size</label>
-                <select id="size-select" name="size">
-                    <option value="US">US (600x600)</option>
-                    <option value="PK">PK (413x531)</option>
-                    <option value="EU">EU (413x531)</option>
-                </select>
-            </div>
-
-            <div id="preset-options" class="extra-options" style="display:none;">
-                <label for="preset-select">Resize Preset</label>
-                <select id="preset-select" name="preset">
-                    <option value="insta_post">Instagram Post (1080x1080)</option>
-                    <option value="insta_story">Instagram Story (1080x1920)</option>
-                    <option value="yt_thumb">YouTube Thumbnail (1280x720)</option>
-                    <option value="linkedin">LinkedIn Banner (1584x396)</option>
-                </select>
-            </div>
-
-            <div id="format-options" class="extra-options" style="display:none;">
-                <label for="format-select">Convert Format</label>
-                <select id="format-select" name="format">
-                    <option value="PNG">PNG</option>
-                    <option value="JPG">JPG</option>
-                    <option value="WEBP">WEBP</option>
-                    <option value="GIF">GIF</option>
-                    <option value="BMP">BMP</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn">Process Image</button>
-        </form>
-
-        <!-- Result Box -->
-        <div id="result-box" class="result-box"></div>
-    </div>
+<section class="features">
+    <a href="/remove-bg">Remove Background</a>
+    <a href="/passport">Passport Photo Maker</a>
+    <a href="/resize">Social Media Resize</a>
+    <a href="/convert">Image Converter</a>
+    <a href="/enhance">Image Enhancer</a>
 </section>
 
-<!-- SEO Section -->
-<section class="seo-section">
-    <div class="container">
-        <h3>Reality Bender Features</h3>
-        <ul>
-            <li>Remove background from any image with AI precision</li>
-            <li>Create passport photos in US, PK, and EU sizes</li>
-            <li>Resize images for Instagram, YouTube, LinkedIn, and more</li>
-            <li>Convert images into PNG, JPG, WEBP, GIF, or BMP</li>
-            <li>Enhance images with sharpness, contrast, and color improvements</li>
-        </ul>
-        <p>Optimize your workflow and get professional-quality images instantly with Reality Bender.</p>
-    </div>
+<section class="ads">
+    <!-- Google AdSense placeholder -->
 </section>
-
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
