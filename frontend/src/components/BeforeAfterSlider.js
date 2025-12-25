@@ -1,40 +1,24 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const BeforeAfterSlider = ({ original, processed }) => {
-  const sliderRef = useRef(null);
-
-  useEffect(() => {
-    const slider = sliderRef.current;
-    const handleMove = (e) => {
-      const rect = slider.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      slider.querySelector('.after').style.width = `${Math.max(0, Math.min(offsetX, rect.width))}px`;
-    };
-    slider.addEventListener('mousemove', handleMove);
-    return () => slider.removeEventListener('mousemove', handleMove);
-  }, []);
+function BeforeAfterSlider({ original, processed }) {
+  const [slider, setSlider] = useState(50);
 
   return (
-    <div
-      ref={sliderRef}
-      className="relative w-full h-96 mt-4 overflow-hidden cursor-ew-resize rounded shadow-lg bg-gray-200"
-    >
-      {/* Original Image */}
-      <img
-        src={original}
-        alt="original"
-        className="absolute top-0 left-0 w-full h-full object-contain"
-      />
-
-      {/* Processed Image */}
-      <img
-        src={processed}
-        alt="processed"
-        className="after absolute top-0 left-0 h-full object-contain"
-        style={{ width: '50%' }}
+    <div className="relative w-full h-96 overflow-hidden mb-4">
+      <img src={original} alt="Original" className="absolute top-0 left-0 w-full h-full object-contain" />
+      <div className="absolute top-0 left-0 h-full overflow-hidden" style={{ width: `${slider}%` }}>
+        <img src={processed} alt="Processed" className="w-full h-full object-contain" />
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={slider}
+        onChange={(e) => setSlider(e.target.value)}
+        className="absolute bottom-0 left-0 w-full"
       />
     </div>
   );
-};
+}
 
 export default BeforeAfterSlider;
