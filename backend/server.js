@@ -1,70 +1,93 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
-const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();
+const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/processed', express.static(path.join(__dirname, 'processed')));
 
-const UPLOAD_DIR = 'uploads';
-const PROCESSED_DIR = 'processed';
-
-if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
-if (!fs.existsSync(PROCESSED_DIR)) fs.mkdirSync(PROCESSED_DIR);
-
+// Multer setup
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-
-const upload = multer({ storage });
-
-// ------------------------
-// Basic processing + AI placeholder
-// ------------------------
-app.post('/api/process', upload.single('image'), async (req, res) => {
-  try {
-    const { width, height, format, brightness, contrast, saturation, sharpness, removeBg } = req.body;
-    const inputPath = req.file.path;
-    const outputFilename = `${Date.now()}.${format || 'png'}`;
-    const outputPath = path.join(PROCESSED_DIR, outputFilename);
-
-    let image = sharp(inputPath);
-
-    // Resize
-    if (width || height) image = image.resize(width ? parseInt(width) : null, height ? parseInt(height) : null);
-
-    // Enhancement (brightness/contrast/saturation/sharpness)
-    if (brightness || contrast || saturation) {
-      image = image.modulate({
-        brightness: brightness ? parseFloat(brightness) : 1,
-        saturation: saturation ? parseFloat(saturation) : 1,
-      });
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
     }
-    if (sharpness) image = image.sharpen(parseFloat(sharpness));
+});
+const upload = multer({ storage: storage });
 
-    // Format
-    image = image.toFormat(format || 'png');
+// ------------------------------
+// Image Processing Endpoint
+// ------------------------------
+app.post('/api/process', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
 
-    await image.toFile(outputPath);
-    fs.unlinkSync(inputPath);
+        const { width, height, rotate, flip, format, quality, brightness, contrast, saturation, sharpness, aiBackground } = req.body;
 
-    // Placeholder for AI background removal if removeBg=true
-    // Here you can call Gemini/Groq APIs and replace processed image
+        let image = sharp(req.file.path);
 
-    res.json({ url: `/${PROCESSED_DIR}/${outputFilename}` });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Image processing failed.' });
-  }
+        // Resize
+        if (width || height) image = image.resize(width ? parseInt(width) : null, height ? parseInt(height) : null);
+
+        // Rotate
+        if (rotate) image = image.rotate(parseInt(rotate));
+
+        // Flip
+        if (flip === 'horizontal') image = image.flip();
+        if (flip === 'vertical') image = image.flop();
+
+        // Enhancement
+        image = image.modulate({
+            brightness: brightness ? parseFloat(brightness) : 1,
+            saturation: saturation ? parseFloat(saturation) : 1
+        }).linear(contrast ? parseFloat(contrast) : 1, 0);
+
+        if (sharpness) image = image.sharpen(parseFloat(sharpness));
+
+        // Format & quality
+        let outputFormat = format || 'png';
+        if (outputFormat === 'jpeg' || outputFormat === 'jpg') {
+            image = image.jpeg({ quality: quality ? parseInt(quality) : 80 });
+        } else if (outputFormat === 'webp') {
+            image = image.webp({ quality: quality ? parseInt(quality) : 80 });
+        } else {
+            image = image.png({ quality: quality ? parseInt(quality) : 80 });
+        }
+
+        const outputFile = path.join('processed', Date.now() + '-' + req.file.originalname);
+        await image.toFile(outputFile);
+
+        // AI Background Removal (placeholder)
+        if (aiBackground === 'true') {
+            // Example: Call Gemini or Groq API
+            // const aiResult = await axios.post('YOUR_AI_API_URL', { image: fs.createReadStream(outputFile) }, { headers: { Authorization: `Bearer ${process.env.GEMINI_API_KEY}` } });
+            // For now, we just return processed image
+        }
+
+        res.json({ url: `/${outputFile}` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Processing failed' });
+    }
 });
 
-// Serve processed images
-app.use(`/${PROCESSED_DIR}`, express.static(path.join(__dirname, PROCESSED_DIR)));
+// Health check
+app.get('/', (req, res) => {
+    res.send('Reality Image Tool Backend is running');
+});
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
