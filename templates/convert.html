@@ -1,32 +1,51 @@
 {% extends "base.html" %}
 
-{% block content %}
-<section class="feature-page">
-    <h1>Convert Image Formats</h1>
-    <p>Convert your images to JPG, PNG, WebP, GIF, or BMP. Fast, free, and AI-optimized conversion.</p>
+{% block title %}Image Format Converter Online | PNG, JPG, WEBP{% endblock %}
 
-    <form action="{{ url_for('convert') }}" method="POST" enctype="multipart/form-data" class="image-form">
+{% block content %}
+
+<section class="container">
+    <h1>Image Format Converter</h1>
+    <p>
+        Convert images to PNG, JPG, or WEBP instantly. Maintain quality and
+        optimize for web or social media platforms.
+    </p>
+
+    <!-- ================= FORM ================= -->
+    <form method="POST" enctype="multipart/form-data" class="tool-form">
+        <label>Upload Image</label>
         <input type="file" name="image" accept="image/*" required>
-        <select name="format">
-            <option value="jpg">JPG</option>
-            <option value="png">PNG</option>
-            <option value="webp">WebP</option>
-            <option value="gif">GIF</option>
-            <option value="bmp">BMP</option>
+
+        <label>Select Format</label>
+        <select name="format" required>
+            <option value="PNG">PNG</option>
+            <option value="JPG">JPG</option>
+            <option value="WEBP">WEBP</option>
         </select>
-        <button type="submit" class="btn">Convert Image</button>
+
+        <button type="submit">Convert Image</button>
     </form>
 
-    {% if output_image %}
-        <div class="result">
-            <h3>Result:</h3>
-            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Converted Image">
-            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
-        </div>
-    {% endif %}
-    
-    <p class="seo-text">
-        Image converter, JPG to PNG, PNG to WebP, AI image format conversion, online image converter free.
-    </p>
+    <!-- ================= AD SLOT ================= -->
+    <div class="ad-slot">
+        Advertisement
+    </div>
+
+    <!-- ================= SEO CONTENT ================= -->
+    <section style="margin-top:40px;">
+        <h2>Why Convert Image Formats?</h2>
+        <p>
+            Different platforms and use cases require specific image formats.
+            PNG offers transparency, JPG provides smaller file size, and WEBP
+            balances quality & compression. Convert your images instantly!
+        </p>
+        <h2>Supported Formats</h2>
+        <ul>
+            <li>PNG – Best for transparent backgrounds</li>
+            <li>JPG – Best for photography & smaller file size</li>
+            <li>WEBP – Best for web optimization</li>
+        </ul>
+    </section>
 </section>
+
 {% endblock %}
