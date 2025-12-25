@@ -1,27 +1,54 @@
 {% extends "base.html" %}
 
-{% block content %}
-<section class="feature-page">
-    <h1>Resize Images</h1>
-    <p>Resize your images for social media, websites, or personal use. Choose custom dimensions or use preset sizes.</p>
+{% block title %}Social Media Image Resizer Online | Instagram, YouTube, LinkedIn{% endblock %}
 
-    <form action="{{ url_for('resize') }}" method="POST" enctype="multipart/form-data" class="image-form">
+{% block content %}
+
+<section class="container">
+    <h1>Social Media Image Resizer</h1>
+    <p>
+        Resize images instantly for Instagram posts, stories, YouTube thumbnails,
+        and LinkedIn banners. No quality loss.
+    </p>
+
+    <!-- ================= FORM ================= -->
+    <form method="POST" enctype="multipart/form-data" class="tool-form">
+
+        <label>Upload Image</label>
         <input type="file" name="image" accept="image/*" required>
-        <input type="number" name="width" placeholder="Width (px)" required>
-        <input type="number" name="height" placeholder="Height (px)" required>
-        <button type="submit" class="btn">Resize Image</button>
+
+        <label>Select Platform</label>
+        <select name="preset" required>
+            <option value="insta_post">Instagram Post (1080 × 1080)</option>
+            <option value="insta_story">Instagram Story (1080 × 1920)</option>
+            <option value="yt_thumb">YouTube Thumbnail (1280 × 720)</option>
+            <option value="linkedin">LinkedIn Banner (1584 × 396)</option>
+        </select>
+
+        <button type="submit">Resize Image</button>
     </form>
 
-    {% if output_image %}
-        <div class="result">
-            <h3>Result:</h3>
-            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Resized Image">
-            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
-        </div>
-    {% endif %}
-    
-    <p class="seo-text">
-        Image resizer, resize photos online, AI image resize, free image resize tool, social media image sizing.
-    </p>
+    <!-- ================= AD SLOT ================= -->
+    <div class="ad-slot">
+        Advertisement
+    </div>
+
+    <!-- ================= SEO CONTENT ================= -->
+    <section style="margin-top:40px;">
+        <h2>Perfect Image Sizes for Social Media</h2>
+        <p>
+            Each social media platform requires specific image dimensions.
+            Uploading incorrectly sized images can reduce quality or crop
+            important content. Our resizer ensures perfect fit every time.
+        </p>
+
+        <h2>Supported Platforms</h2>
+        <ul>
+            <li>Instagram Posts & Stories</li>
+            <li>YouTube Thumbnails</li>
+            <li>LinkedIn Banners</li>
+        </ul>
+    </section>
 </section>
+
 {% endblock %}
