@@ -10,7 +10,13 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// CORS setup for your deployed frontend
+app.use(cors({
+    origin: 'https://reality-bender-tools-1.onrender.com', // frontend URL
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/processed', express.static(path.join(__dirname, 'processed')));
@@ -72,7 +78,6 @@ app.post('/api/process', upload.single('image'), async (req, res) => {
         if (aiBackground === 'true') {
             // Example: Call Gemini or Groq API
             // const aiResult = await axios.post('YOUR_AI_API_URL', { image: fs.createReadStream(outputFile) }, { headers: { Authorization: `Bearer ${process.env.GEMINI_API_KEY}` } });
-            // For now, we just return processed image
         }
 
         res.json({ url: `/${outputFile}` });
