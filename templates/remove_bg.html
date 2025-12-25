@@ -1,25 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-<section class="feature-page">
-    <h1>Remove Background from Images</h1>
-    <p>Instantly remove the background from your images using our AI-powered tool. Perfect for e-commerce, social media, or personal projects.</p>
-    
-    <form action="{{ url_for('remove_bg') }}" method="POST" enctype="multipart/form-data" class="image-form">
-        <input type="file" name="image" accept="image/*" required>
-        <button type="submit" class="btn">Remove Background</button>
-    </form>
-
-    {% if output_image %}
-        <div class="result">
-            <h3>Result:</h3>
-            <img src="{{ url_for('static', filename='output/' ~ output_image) }}" alt="Background Removed Image">
-            <a href="{{ url_for('static', filename='output/' ~ output_image) }}" download class="btn-card">Download</a>
-        </div>
-    {% endif %}
-    
-    <p class="seo-text">
-        Remove image background, AI background remover, automatic background removal, free online tool, transparent images.
-    </p>
-</section>
+<h2>Remove Image Background</h2>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+    <button type="submit">Remove Background</button>
+</form>
 {% endblock %}
