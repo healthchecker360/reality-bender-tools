@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Resize your images online. Free, simple, fast.">
+  <title>Resize Image - Image Tools</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Image Resize Tool</h1>
+  </header>
+  <div class="container card">
+    <input type="file" id="upload" accept="image/*">
+    <canvas id="preview"></canvas>
+    <div>
+      <input type="number" id="width" placeholder="Width (px)">
+      <input type="number" id="height" placeholder="Height (px)">
+      <button id="resizeBtn">Apply Resize</button>
+      <button id="downloadBtn">Download</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { setupUpload } from './js/upload.js';
+    import { sendImage } from './js/api.js';
+
+    const canvas = document.getElementById("preview");
+    const ctx = canvas.getContext("2d");
+
+    setupUpload("upload");
+
+    // Draw live preview
+    window.addEventListener("image-updated", () => {
+      const img = new Image();
+      img.src = window.sessionImage;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+      };
+    });
+
+    // Resize button
+    document.getElementById("resizeBtn").addEventListener("click", async () => {
+      if (!window.sessionImage) return alert("Upload an image first");
+      const width = parseInt(document.getElementById("width").value);
+      const height = parseInt(document.getElementById("height").value);
+      if (!width || !height) return alert("Enter width & height");
+
+      const blob = await fetch(window.sessionImage).then(r => r.blob());
+      const formData = new FormData();
+      formData.append("image", blob, "image.png");
+      formData.append("width", width);
+      formData.append("height", height);
+
+      const processedBlob = await sendImage("/resize", formData);
+      if (!processedBlob) return;
+
+      const url = URL.createObjectURL(processedBlob);
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        window.sessionImage = url;
+      };
+    });
+
+    // Download button
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      if (!window.sessionImage) return alert("No image to download");
+      alert("Ad would show here before download"); // placeholder for ad
+      const a = document.createElement("a");
+      a.href = window.sessionImage;
+      a.download = "resized-image.png";
+      a.click();
+    });
+  </script>
+</body>
+</html>
