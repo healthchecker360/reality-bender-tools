@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: reality-bender-tools
+    name: reality-bender-tools-backend
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
