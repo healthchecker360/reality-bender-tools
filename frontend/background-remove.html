@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Remove background from images online for free. Fast and professional.">
+  <title>Background Remove – Image Tools</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Background Remove Tool</h1>
+  </header>
+  <div class="container card">
+    <input type="file" id="upload" accept="image/*">
+    <canvas id="preview"></canvas>
+    <div>
+      <button id="removeBtn">Remove Background</button>
+      <button id="downloadBtn">Download</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { setupUpload } from './js/upload.js';
+    import { sendImage } from './js/api.js';
+
+    const canvas = document.getElementById("preview");
+    const ctx = canvas.getContext("2d");
+
+    setupUpload("upload");
+
+    // Draw live preview
+    window.addEventListener("image-updated", () => {
+      const img = new Image();
+      img.src = window.sessionImage;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+      };
+    });
+
+    // Remove background
+    document.getElementById("removeBtn").addEventListener("click", async () => {
+      if (!window.sessionImage) return alert("Upload an image first");
+
+      const blob = await fetch(window.sessionImage).then(r => r.blob());
+      const formData = new FormData();
+      formData.append("image", blob, "image.png");
+
+      const processedBlob = await sendImage("/remove-bg", formData);
+      if (!processedBlob) return;
+
+      const url = URL.createObjectURL(processedBlob);
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        window.sessionImage = url;
+      };
+    });
+
+    // Download
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      if (!window.sessionImage) return alert("No image to download");
+      alert("Ad would show here before download"); // Placeholder for ad
+      const a = document.createElement("a");
+      a.href = window.sessionImage;
+      a.download = "bg-removed.png";
+      a.click();
+    });
+  </script>
+</body>
+</html>
